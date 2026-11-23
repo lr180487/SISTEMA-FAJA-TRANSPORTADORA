@@ -81,7 +81,6 @@
 
   async function apiFetch(path, options = {}) {
     const headers = Object.assign(
-<<<<<<< HEAD
       { Accept: "application/json" },
       options.headers || {}
     );
@@ -113,15 +112,6 @@
     if (!response.ok) {
       const detail = data.detail || data.message || `HTTP ${response.status}`;
       throw new Error(typeof detail === "string" ? detail : JSON.stringify(detail));
-=======
-      { "Content-Type": "application/json" },
-      options.headers || {}
-    );
-    const resp = await fetch(path, Object.assign({}, options, { headers }));
-    const data = await resp.json().catch(() => ({}));
-    if (!resp.ok) {
-      throw new Error(data.detail || data.message || `HTTP ${resp.status}`);
->>>>>>> 6b869b7 (Initial commit: S_F_T)
     }
     return data;
   }
@@ -323,7 +313,6 @@
   }
 
   async function syncFullState(forceReload = false) {
-<<<<<<< HEAD
     const endpoint = forceReload ? "/api/v1/sync" : "/api/v1/bootstrap";
     const method = forceReload ? "POST" : "GET";
     try {
@@ -347,20 +336,6 @@
         );
         return null;
       }
-=======
-    try {
-      const endpoint = forceReload ? "/api/v1/sync" : "/api/v1/bootstrap";
-      const method = forceReload ? "POST" : "GET";
-      const bundle = await apiFetch(endpoint, { method });
-      ingestBootstrap(bundle);
-      return bundle;
-    } catch (_) {
-      try {
-        const snap = await apiFetch("/api/v1/status");
-        ingestSnapshot(snap, { force: true });
-      } catch (_e) {}
-      return null;
->>>>>>> 6b869b7 (Initial commit: S_F_T)
     }
   }
 
@@ -1342,15 +1317,10 @@
 
     socket.onopen = () => {
       appState.wsConnected = true;
-<<<<<<< HEAD
       const wsDot = document.getElementById("wsDot");
       const wsStatusText = document.getElementById("wsStatusText");
       if (wsDot) wsDot.style.background = "#10b981";
       if (wsStatusText) wsStatusText.textContent = "En línea";
-=======
-      document.getElementById("wsDot").style.background = "#10b981";
-      document.getElementById("wsStatusText").textContent = "En línea";
->>>>>>> 6b869b7 (Initial commit: S_F_T)
       appState.wsPingTimer = setInterval(() => {
         if (socket.readyState === WebSocket.OPEN) {
           try {
@@ -1373,7 +1343,6 @@
       } catch (_) {}
     };
 
-<<<<<<< HEAD
     socket.onerror = () => {
       appState.wsConnected = false;
       const wsDot = document.getElementById("wsDot");
@@ -1382,23 +1351,16 @@
       if (wsStatusText) wsStatusText.textContent = "Reconectando";
     };
 
-=======
->>>>>>> 6b869b7 (Initial commit: S_F_T)
     socket.onclose = () => {
       appState.wsConnected = false;
       if (appState.wsPingTimer) {
         clearInterval(appState.wsPingTimer);
         appState.wsPingTimer = null;
       }
-<<<<<<< HEAD
       const wsDot = document.getElementById("wsDot");
       const wsStatusText = document.getElementById("wsStatusText");
       if (wsDot) wsDot.style.background = "#f59e0b";
       if (wsStatusText) wsStatusText.textContent = "Conectando";
-=======
-      document.getElementById("wsDot").style.background = "#f59e0b";
-      document.getElementById("wsStatusText").textContent = "Conectando";
->>>>>>> 6b869b7 (Initial commit: S_F_T)
       setTimeout(connectRealtimeTelemetry, 2500);
     };
 
@@ -1409,7 +1371,6 @@
     };
   }
 
-<<<<<<< HEAD
 
   // ------------------------------------------------------------------
   // Monitor Node-RED: canal WebSocket independiente del SCADA
@@ -1525,8 +1486,6 @@
     loadNodeRedHistory();
   }
 
-=======
->>>>>>> 6b869b7 (Initial commit: S_F_T)
   // Respaldo HTTP automático únicamente mientras el WebSocket se reconecta
   setInterval(async () => {
     if (!appState.wsConnected) {
@@ -1553,12 +1512,9 @@
   }
 
   function bindEvents() {
-<<<<<<< HEAD
     document.getElementById("btnNodeRedReconnect")?.addEventListener("click", connectNodeRedMonitor);
     document.getElementById("btnNodeRedClear")?.addEventListener("click", () => { nodeRedState.events = []; renderNodeRedEvents(); });
     document.getElementById("nodeRedEventFilter")?.addEventListener("change", renderNodeRedEvents);
-=======
->>>>>>> 6b869b7 (Initial commit: S_F_T)
     // Cambio de pestañas
     document.querySelectorAll(".nav-tab").forEach((btn) => {
       btn.addEventListener("click", () => {
@@ -2542,11 +2498,8 @@
     bindEvents();
     await syncFullState(false);
     connectRealtimeTelemetry();
-<<<<<<< HEAD
     connectNodeRedMonitor();
     startNodeRedStatusPolling();
-=======
->>>>>>> 6b869b7 (Initial commit: S_F_T)
     requestAnimationFrame(renderConveyorLoop);
   }
 

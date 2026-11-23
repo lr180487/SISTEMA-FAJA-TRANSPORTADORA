@@ -6,19 +6,11 @@ import threading
 import time
 from typing import Any, Dict, List
 
-<<<<<<< HEAD
 from backend.core.config import settings
 from backend.infrastructure.database import DatabaseManager
 from backend.ai.multiagent.system import MultiAgentRAGSystem
 from backend.domain.simulation import ConveyorSimulator, iso_now
 from backend.realtime.ws_hub import RealtimeHub
-=======
-from backend.config import settings
-from backend.database import DatabaseManager
-from backend.rag_multiagent import MultiAgentRAGSystem
-from backend.simulation import ConveyorSimulator, iso_now
-from backend.ws_hub import RealtimeHub
->>>>>>> 6b869b7 (Initial commit: S_F_T)
 
 
 class ApplicationState:
