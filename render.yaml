@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: sft-scada-pid
+    runtime: python
+    buildCommand: >-
+      curl -LsSf https://astral.sh/uv/install.sh |
+      env UV_INSTALL_DIR="$HOME/.local/bin" sh &&
+      "$HOME/.local/bin/uv" --version &&
+      "$HOME/.local/bin/uv" sync --locked --no-dev --no-install-project
+    startCommand: ./.venv/bin/python -m uvicorn backend.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.14.10
+      - key: UV_PYTHON_DOWNLOADS
+        value: "never"

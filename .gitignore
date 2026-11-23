@@ -1,0 +1,125 @@
+
+# =====================================================
+# S_F_T - Git Ignore
+# FastAPI + Python + Frontend + SCADA + Multiagent RAG
+# =====================================================
+
+# -------------------------
+# SECRETS / ENVIRONMENT
+# -------------------------
+.env
+.env.*
+!.env.example
+!.env.template
+
+*.pem
+*.key
+*.p12
+*.pfx
+secrets/
+credentials/
+credentials.json
+service-account*.json
+
+# -------------------------
+# PYTHON
+# -------------------------
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+.venv/
+venv/
+env/
+ENV/
+
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.hypothesis/
+.tox/
+.nox/
+
+.coverage
+.coverage.*
+htmlcov/
+coverage.xml
+
+# -------------------------
+# DATABASE / RUNTIME
+# -------------------------
+*.db
+*.sqlite
+*.sqlite3
+*.db-wal
+*.db-shm
+*.sqlite-wal
+*.sqlite-shm
+
+# Preserve directory structure if needed
+!data/.gitkeep
+
+*.pid
+*.log
+logs/
+tmp/
+temp/
+runtime/
+cache/
+
+# -------------------------
+# FRONTEND / NODE
+# -------------------------
+node_modules/
+dist/
+build/
+coverage/
+.npm/
+.pnpm-store/
+
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+
+# -------------------------
+# TEST / REPORTS
+# -------------------------
+test-results/
+playwright-report/
+.nyc_output/
+*.prof
+*.coverage
+
+# -------------------------
+# IDE / EDITORS
+# -------------------------
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# -------------------------
+# OS
+# -------------------------
+.DS_Store
+Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# -------------------------
+# DOCKER / LOCAL OVERRIDES
+# -------------------------
+.env.docker
+docker-compose.override.yml
+
+# -------------------------
+# GENERATED / ARCHIVES
+# -------------------------
+*.zip
+*.tar
+*.tar.gz
+*.bak
+*.old
+*.orig
