@@ -1,0 +1,504 @@
+[
+  {
+    "id": "50ebc34c1c084c3f",
+    "type": "tab",
+    "label": "10 · TIA PORTAL S7-1200 · OPC UA",
+    "disabled": false,
+    "info": "Integración OPC UA de SOLO LECTURA con CPU Siemens S7-1200 desde TIA Portal. Configure endpoint y NodeId reales. No se generan escrituras ni órdenes de marcha."
+  },
+  {
+    "id": "0be0f62064af4ed9",
+    "type": "OpcUa-Endpoint",
+    "endpoint": "opc.tcp://192.168.0.10:4840",
+    "secpol": "None",
+    "secmode": "None",
+    "none": true,
+    "login": false,
+    "usercert": false,
+    "usercertificate": "",
+    "userprivatekey": "",
+    "name": "S7-1200 · OPC UA (CAMBIAR IP/SEGURIDAD)"
+  },
+  {
+    "id": "5d1476a3ee864b5d",
+    "type": "inject",
+    "z": "50ebc34c1c084c3f",
+    "name": "Explorar espacio OPC UA",
+    "props": [
+      {
+        "p": "payload"
+      }
+    ],
+    "repeat": "",
+    "crontab": "",
+    "once": false,
+    "onceDelay": 0.1,
+    "topic": "",
+    "payload": "browse",
+    "payloadType": "str",
+    "x": 150,
+    "y": 120,
+    "wires": [
+      [
+        "d5e398afff61439c"
+      ]
+    ]
+  },
+  {
+    "id": "d5e398afff61439c",
+    "type": "function",
+    "z": "50ebc34c1c084c3f",
+    "name": "Preparar Browse RootFolder",
+    "func": "// Browse solo lectura: RootFolder estándar OPC UA.\nmsg.topic = 'ns=0;i=84';\nmsg.action = 'browse';\nreturn msg;",
+    "outputs": 1,
+    "timeout": 0,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 420,
+    "y": 120,
+    "wires": [
+      [
+        "fc2d9eff12124518"
+      ]
+    ]
+  },
+  {
+    "id": "fc2d9eff12124518",
+    "type": "OpcUa-Client",
+    "z": "50ebc34c1c084c3f",
+    "endpoint": "0be0f62064af4ed9",
+    "action": "browse",
+    "deadbandtype": "a",
+    "deadbandvalue": 1,
+    "time": 10,
+    "timeUnit": "s",
+    "certificate": "n",
+    "localfile": "",
+    "securitymode": "None",
+    "securitypolicy": "None",
+    "name": "S7-1200 · Browse address space",
+    "x": 700,
+    "y": 120,
+    "wires": [
+      [
+        "c21d4eec5f534488"
+      ]
+    ],
+    "localkeyfile": "",
+    "folderName4PKI": "",
+    "useTransport": false,
+    "maxChunkCount": "",
+    "maxMessageSize": "",
+    "receiveBufferSize": "",
+    "sendBufferSize": ""
+  },
+  {
+    "id": "c21d4eec5f534488",
+    "type": "debug",
+    "z": "50ebc34c1c084c3f",
+    "name": "OPC UA · Browse results",
+    "active": true,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": false,
+    "complete": "true",
+    "targetType": "full",
+    "statusVal": "",
+    "statusType": "auto",
+    "x": 970,
+    "y": 120,
+    "wires": []
+  },
+  {
+    "id": "596b6f064601432c",
+    "type": "inject",
+    "z": "50ebc34c1c084c3f",
+    "name": "Leer variable DB100 (manual)",
+    "props": [
+      {
+        "p": "payload"
+      }
+    ],
+    "repeat": "",
+    "crontab": "",
+    "once": false,
+    "onceDelay": 0.1,
+    "topic": "",
+    "payload": "read",
+    "payloadType": "str",
+    "x": 150,
+    "y": 240,
+    "wires": [
+      [
+        "16e27a1e847b41db"
+      ]
+    ]
+  },
+  {
+    "id": "16e27a1e847b41db",
+    "type": "function",
+    "z": "50ebc34c1c084c3f",
+    "name": "Validar NodeId DB100 y preparar lectura",
+    "func": "// Define SFT_DB100_NODEID en el entorno Node-RED con el NodeId REAL\n// obtenido del Server Interface de TIA Portal. No se adivinan namespaces.\nconst nodeId = env.get('SFT_DB100_NODEID');\nif (!nodeId || !/^ns=\\d+;[isgb]=/.test(nodeId)) {\n  node.warn('Configura SFT_DB100_NODEID con un NodeId válido exportado desde TIA Portal');\n  return null;\n}\nmsg.topic = nodeId;\nmsg.action = 'read';\nreturn msg;",
+    "outputs": 1,
+    "timeout": 0,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 460,
+    "y": 240,
+    "wires": [
+      [
+        "bdec5a5be2e64e24"
+      ]
+    ]
+  },
+  {
+    "id": "bdec5a5be2e64e24",
+    "type": "OpcUa-Client",
+    "z": "50ebc34c1c084c3f",
+    "endpoint": "0be0f62064af4ed9",
+    "action": "read",
+    "deadbandtype": "a",
+    "deadbandvalue": 1,
+    "time": 10,
+    "timeUnit": "s",
+    "certificate": "n",
+    "localfile": "",
+    "securitymode": "None",
+    "securitypolicy": "None",
+    "name": "S7-1200 · Read DB100 variable",
+    "x": 740,
+    "y": 240,
+    "wires": [
+      [
+        "db2c2ab719b141a6"
+      ]
+    ],
+    "localkeyfile": "",
+    "folderName4PKI": "",
+    "useTransport": false,
+    "maxChunkCount": "",
+    "maxMessageSize": "",
+    "receiveBufferSize": "",
+    "sendBufferSize": ""
+  },
+  {
+    "id": "db2c2ab719b141a6",
+    "type": "debug",
+    "z": "50ebc34c1c084c3f",
+    "name": "OPC UA · DB100 value",
+    "active": true,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": true,
+    "complete": "true",
+    "targetType": "full",
+    "statusVal": "payload",
+    "statusType": "msg",
+    "x": 1010,
+    "y": 240,
+    "wires": []
+  },
+  {
+    "id": "0eed9d6afc724f80",
+    "type": "inject",
+    "z": "50ebc34c1c084c3f",
+    "name": "Suscribir variable DB100 (manual)",
+    "props": [
+      {
+        "p": "payload"
+      }
+    ],
+    "repeat": "",
+    "crontab": "",
+    "once": false,
+    "onceDelay": 0.1,
+    "topic": "",
+    "payload": "subscribe",
+    "payloadType": "str",
+    "x": 150,
+    "y": 360,
+    "wires": [
+      [
+        "28880aa8259f469f"
+      ]
+    ]
+  },
+  {
+    "id": "28880aa8259f469f",
+    "type": "function",
+    "z": "50ebc34c1c084c3f",
+    "name": "Validar NodeId y preparar suscripción",
+    "func": "// Suscripción de SOLO LECTURA. NodeId de la Server Interface del PLC.\nconst nodeId = env.get('SFT_DB100_NODEID');\nif (!nodeId || !/^ns=\\d+;[isgb]=/.test(nodeId)) {\n  node.warn('Configura SFT_DB100_NODEID con el NodeId real del DB100');\n  return null;\n}\nmsg.topic = nodeId;\nmsg.action = 'subscribe';\nmsg.payload = 1000; // intervalo de muestreo solicitado (ms)\nmsg.interval = 1000;\nmsg.queueSize = 10;\nreturn msg;",
+    "outputs": 1,
+    "timeout": 0,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 460,
+    "y": 360,
+    "wires": [
+      [
+        "658ef87c804a4fdf"
+      ]
+    ]
+  },
+  {
+    "id": "658ef87c804a4fdf",
+    "type": "OpcUa-Client",
+    "z": "50ebc34c1c084c3f",
+    "endpoint": "0be0f62064af4ed9",
+    "action": "subscribe",
+    "deadbandtype": "a",
+    "deadbandvalue": 0,
+    "time": 1,
+    "timeUnit": "s",
+    "certificate": "n",
+    "localfile": "",
+    "securitymode": "None",
+    "securitypolicy": "None",
+    "name": "S7-1200 · Subscribe DB100 variable",
+    "x": 760,
+    "y": 360,
+    "wires": [
+      [
+        "b3afa590cdea4c07"
+      ]
+    ],
+    "localkeyfile": "",
+    "folderName4PKI": "",
+    "useTransport": false,
+    "maxChunkCount": "",
+    "maxMessageSize": "",
+    "receiveBufferSize": "",
+    "sendBufferSize": ""
+  },
+  {
+    "id": "b3afa590cdea4c07",
+    "type": "debug",
+    "z": "50ebc34c1c084c3f",
+    "name": "OPC UA · subscription updates",
+    "active": true,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": true,
+    "complete": "true",
+    "targetType": "full",
+    "statusVal": "payload",
+    "statusType": "msg",
+    "x": 1040,
+    "y": 360,
+    "wires": []
+  },
+  {
+    "id": "56eedcef7ac644fa",
+    "type": "inject",
+    "z": "50ebc34c1c084c3f",
+    "name": "Cancelar suscripción (manual)",
+    "props": [
+      {
+        "p": "payload"
+      }
+    ],
+    "repeat": "",
+    "crontab": "",
+    "once": false,
+    "onceDelay": 0.1,
+    "topic": "",
+    "payload": "unsubscribe",
+    "payloadType": "str",
+    "x": 150,
+    "y": 460,
+    "wires": [
+      [
+        "16f79c2ebf464af4"
+      ]
+    ]
+  },
+  {
+    "id": "16f79c2ebf464af4",
+    "type": "function",
+    "z": "50ebc34c1c084c3f",
+    "name": "Preparar unsubscribe",
+    "func": "const nodeId = env.get('SFT_DB100_NODEID');\nif (!nodeId) return null;\nmsg.topic = nodeId;\nmsg.action = 'unsubscribe';\nreturn msg;",
+    "outputs": 1,
+    "timeout": 0,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 420,
+    "y": 460,
+    "wires": [
+      [
+        "b0e6f7f7a9be4f96"
+      ]
+    ]
+  },
+  {
+    "id": "b0e6f7f7a9be4f96",
+    "type": "OpcUa-Client",
+    "z": "50ebc34c1c084c3f",
+    "endpoint": "0be0f62064af4ed9",
+    "action": "unsubscribe",
+    "deadbandtype": "a",
+    "deadbandvalue": 0,
+    "time": 1,
+    "timeUnit": "s",
+    "certificate": "n",
+    "localfile": "",
+    "securitymode": "None",
+    "securitypolicy": "None",
+    "name": "S7-1200 · Unsubscribe",
+    "x": 700,
+    "y": 460,
+    "wires": [
+      []
+    ],
+    "localkeyfile": "",
+    "folderName4PKI": "",
+    "useTransport": false,
+    "maxChunkCount": "",
+    "maxMessageSize": "",
+    "receiveBufferSize": "",
+    "sendBufferSize": ""
+  },
+  {
+    "id": "87ea0c1ff85248df",
+    "type": "status",
+    "z": "50ebc34c1c084c3f",
+    "name": "Estado nodos OPC UA",
+    "scope": [
+      "fc2d9eff12124518",
+      "bdec5a5be2e64e24",
+      "658ef87c804a4fdf",
+      "b0e6f7f7a9be4f96"
+    ],
+    "x": 160,
+    "y": 560,
+    "wires": [
+      [
+        "8ea0f1a97ad045d5"
+      ]
+    ]
+  },
+  {
+    "id": "8ea0f1a97ad045d5",
+    "type": "function",
+    "z": "50ebc34c1c084c3f",
+    "name": "Publicar estado OPC UA al monitor",
+    "func": "const s=msg.status||{}; const src=s.source||{};\nmsg.method='POST';\nmsg.url=(env.get('SFT_MONITOR_URL')||((env.get('FASTAPI_BASE_URL')||'http://127.0.0.1:8000')+'/api/v1/node-red/events')).replace(/\\/$/,'');\nmsg.headers={'Content-Type':'application/json','X-Node-RED-Token':env.get('SFT_MONITOR_TOKEN')||env.get('NODE_RED_MONITOR_TOKEN')||''};\nmsg.payload={event:'opcua_node_status',level:s.fill==='red'?'error':'info',node_id:src.id||'',node_type:src.type||'OpcUa',node_name:src.name||'OPC UA',message:String(s.text||s.fill||'OPC UA status').slice(0,500),flow_name:'TIA Portal S7-1200 OPC UA',timestamp:new Date().toISOString()};\nreturn msg;",
+    "outputs": 1,
+    "timeout": 0,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 460,
+    "y": 560,
+    "wires": [
+      [
+        "40e7e8c9d29a4ba2"
+      ]
+    ]
+  },
+  {
+    "id": "40e7e8c9d29a4ba2",
+    "type": "http request",
+    "z": "50ebc34c1c084c3f",
+    "name": "FastAPI · reportar estado OPC UA",
+    "method": "use",
+    "ret": "obj",
+    "paytoqs": "ignore",
+    "url": "",
+    "tls": "",
+    "persist": false,
+    "proxy": "",
+    "insecureHTTPParser": false,
+    "authType": "",
+    "senderr": false,
+    "headers": [],
+    "x": 790,
+    "y": 560,
+    "wires": [
+      []
+    ]
+  },
+  {
+    "id": "d1937b21b7e94c7f",
+    "type": "catch",
+    "z": "50ebc34c1c084c3f",
+    "name": "Capturar errores OPC UA",
+    "scope": [
+      "fc2d9eff12124518",
+      "bdec5a5be2e64e24",
+      "658ef87c804a4fdf",
+      "b0e6f7f7a9be4f96"
+    ],
+    "uncaught": false,
+    "x": 160,
+    "y": 660,
+    "wires": [
+      [
+        "08749ee516be4cc1"
+      ]
+    ]
+  },
+  {
+    "id": "08749ee516be4cc1",
+    "type": "function",
+    "z": "50ebc34c1c084c3f",
+    "name": "Normalizar error OPC UA",
+    "func": "const e=msg.error||{}; const src=e.source||{};\nmsg.method='POST';\nmsg.url=(env.get('SFT_MONITOR_URL')||((env.get('FASTAPI_BASE_URL')||'http://127.0.0.1:8000')+'/api/v1/node-red/events')).replace(/\\/$/,'');\nmsg.headers={'Content-Type':'application/json','X-Node-RED-Token':env.get('SFT_MONITOR_TOKEN')||env.get('NODE_RED_MONITOR_TOKEN')||''};\nmsg.payload={event:'opcua_error',level:'error',node_id:src.id||'',node_type:src.type||'OpcUa',node_name:src.name||'OPC UA',message:String(e.message||e.code||'OPC UA communication error').slice(0,1000),flow_name:'TIA Portal S7-1200 OPC UA',timestamp:new Date().toISOString()};\nreturn msg;",
+    "outputs": 1,
+    "timeout": 0,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 440,
+    "y": 660,
+    "wires": [
+      [
+        "2473ba0c8f6e4b8f"
+      ]
+    ]
+  },
+  {
+    "id": "2473ba0c8f6e4b8f",
+    "type": "http request",
+    "z": "50ebc34c1c084c3f",
+    "name": "FastAPI · reportar error OPC UA",
+    "method": "use",
+    "ret": "obj",
+    "paytoqs": "ignore",
+    "url": "",
+    "tls": "",
+    "persist": false,
+    "proxy": "",
+    "insecureHTTPParser": false,
+    "authType": "",
+    "senderr": false,
+    "headers": [],
+    "x": 770,
+    "y": 660,
+    "wires": [
+      []
+    ]
+  },
+  {
+    "id": "0fcf91eee2114792",
+    "type": "comment",
+    "z": "50ebc34c1c084c3f",
+    "name": "ANTES DE DEPLOY · TIA PORTAL V17",
+    "info": "1) En Device configuration > OPC UA > Server, habilitar OPC UA Server de la CPU.\n2) En OPC UA communication > Server interfaces, crear una interfaz y agregar los tags del DB100. Compilar y descargar al PLC/PLCSIM compatible.\n3) Configurar usuario/rol y certificados/trust list. Security=None es solo para laboratorio aislado si la CPU lo permite; en producción usar política segura.\n4) Cambiar el endpoint de ejemplo por el endpoint real del PLC, incluida su ruta si la configuración la muestra.\n5) Definir SFT_DB100_NODEID con el NodeId REAL de una variable exportada/observada desde la Server Interface; no asumir ns=3 ni nombres.\n6) Instalar node-red-contrib-opcua. Este flujo es SOLO LECTURA: browse/read/subscribe/unsubscribe; no hay escrituras ni start/stop de motor.\n7) El flujo antiguo GET /api/v1/status conserva el snapshot del backend/simulador y no certifica conexión física.",
+    "x": 520,
+    "y": 760,
+    "wires": []
+  }
+]

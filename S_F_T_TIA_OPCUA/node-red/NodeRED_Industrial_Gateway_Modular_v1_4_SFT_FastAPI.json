@@ -1,0 +1,2499 @@
+[
+  {
+    "id": "81836be24ab952ff",
+    "type": "tab",
+    "label": "01 · MAIN ORCHESTRATOR",
+    "disabled": false,
+    "info": "MAIN ORCHESTRATOR · S_F_T FastAPI v6.1 contract · Node-RED event monitor enabled"
+  },
+  {
+    "id": "ec85c0e138195d76",
+    "type": "tab",
+    "label": "02 · PLC S7-1200",
+    "disabled": false,
+    "info": "PLC S7-1200. El link de snapshot GET /api/v1/status conserva datos del backend/simulador. La conexión real de PLC se implementa en la pestaña 10 mediante OPC UA de solo lectura; requiere endpoint y NodeIds reales configurados en TIA Portal y descargados al PLC/PLCSIM."
+  },
+  {
+    "id": "991a121728fc5e69",
+    "type": "tab",
+    "label": "03 · FASTAPI GATEWAY",
+    "disabled": false,
+    "info": "03 · FASTAPI GATEWAY · S_F_T FastAPI contract v6.1"
+  },
+  {
+    "id": "cee9fcbb330854c6",
+    "type": "tab",
+    "label": "04 · OPENAI ASSISTANT",
+    "disabled": false,
+    "info": "04 · OPENAI ASSISTANT · S_F_T FastAPI contract v6.1"
+  },
+  {
+    "id": "d9088803118f5663",
+    "type": "tab",
+    "label": "05 · SQLITE MONITOR",
+    "disabled": false,
+    "info": "05 · SQLITE MONITOR · S_F_T FastAPI contract v6.1"
+  },
+  {
+    "id": "71a47a4cc2cf5ea9",
+    "type": "tab",
+    "label": "06 · ALARMS & EVENTS",
+    "disabled": false,
+    "info": "06 · ALARMS & EVENTS · S_F_T FastAPI contract v6.1"
+  },
+  {
+    "id": "881555c2970e576b",
+    "type": "tab",
+    "label": "07 · DASHBOARD HMI",
+    "disabled": false,
+    "info": "07 · DASHBOARD HMI · S_F_T FastAPI contract v6.1"
+  },
+  {
+    "id": "79930c446b4e5252",
+    "type": "tab",
+    "label": "08 · REPORTS",
+    "disabled": false,
+    "info": "08 · REPORTS · S_F_T FastAPI contract v6.1"
+  },
+  {
+    "id": "86a989dc629e5409",
+    "type": "ui_tab",
+    "name": "Industrial Gateway",
+    "icon": "dashboard",
+    "disabled": false,
+    "hidden": false
+  },
+  {
+    "id": "29d0a5900b82531e",
+    "type": "ui_group",
+    "name": "Estado de plataforma",
+    "tab": "86a989dc629e5409",
+    "order": 1,
+    "disp": true,
+    "width": "12",
+    "collapse": false,
+    "className": ""
+  },
+  {
+    "id": "8af27acd5f115bbb",
+    "type": "ui_group",
+    "name": "Consultas y operaciones",
+    "tab": "86a989dc629e5409",
+    "order": 2,
+    "disp": true,
+    "width": "6",
+    "collapse": false,
+    "className": ""
+  },
+  {
+    "id": "b62085f6042555c9",
+    "type": "ui_group",
+    "name": "Asistente OpenAI",
+    "tab": "86a989dc629e5409",
+    "order": 3,
+    "disp": true,
+    "width": "6",
+    "collapse": false,
+    "className": ""
+  },
+  {
+    "id": "c803c38b379d5bee",
+    "type": "ui_group",
+    "name": "Eventos y alarmas",
+    "tab": "86a989dc629e5409",
+    "order": 4,
+    "disp": true,
+    "width": "12",
+    "collapse": false,
+    "className": ""
+  },
+  {
+    "id": "e53cfbee250c5b4c",
+    "type": "link in",
+    "z": "81836be24ab952ff",
+    "name": "BUS · solicitudes HMI",
+    "links": [],
+    "x": 150,
+    "y": 120,
+    "wires": [
+      [
+        "ddcff1da6f1456e0"
+      ]
+    ]
+  },
+  {
+    "id": "ddcff1da6f1456e0",
+    "type": "switch",
+    "z": "81836be24ab952ff",
+    "name": "Enrutador por msg.topic · FastAPI contract",
+    "x": 420,
+    "y": 120,
+    "wires": [
+      [
+        "e0530dff2d7e5209"
+      ],
+      [
+        "f2cb06c48da7510a"
+      ],
+      [
+        "fb557dafcb86537c"
+      ],
+      [
+        "83285b00c43d566e"
+      ],
+      [
+        "d98d50340af65231"
+      ],
+      [
+        "12308f1812e2515a"
+      ],
+      [
+        "b3a7bab877da5bc9"
+      ]
+    ],
+    "property": "topic",
+    "propertyType": "msg",
+    "rules": [
+      {
+        "t": "eq",
+        "v": "scada.snapshot.get",
+        "vt": "str"
+      },
+      {
+        "t": "eq",
+        "v": "platform.ops.get",
+        "vt": "str"
+      },
+      {
+        "t": "eq",
+        "v": "ai.chat",
+        "vt": "str"
+      },
+      {
+        "t": "eq",
+        "v": "sqlite.metrics.get",
+        "vt": "str"
+      },
+      {
+        "t": "eq",
+        "v": "events.list",
+        "vt": "str"
+      },
+      {
+        "t": "eq",
+        "v": "reports.summary",
+        "vt": "str"
+      },
+      {
+        "t": "else"
+      }
+    ],
+    "checkall": "true",
+    "repair": false
+  },
+  {
+    "id": "e0530dff2d7e5209",
+    "type": "link call",
+    "z": "81836be24ab952ff",
+    "name": "CALL → SCADA snapshot",
+    "links": [
+      "3a13599b8785552e"
+    ],
+    "linkType": "static",
+    "timeout": "45",
+    "x": 700,
+    "y": 80,
+    "wires": [
+      [
+        "198974b95351508d"
+      ]
+    ]
+  },
+  {
+    "id": "198974b95351508d",
+    "type": "function",
+    "z": "81836be24ab952ff",
+    "name": "Normalizar respuesta snapshot SCADA",
+    "x": 980,
+    "y": 80,
+    "wires": [
+      [
+        "ac91d3238f61537d"
+      ]
+    ],
+    "func": "const body=msg.payload;\nmsg.payload={kind:'response',request_id:msg.request_id||msg._msgid||'unknown',topic:msg._request_topic||msg.topic,status:(msg.statusCode>=400)?'error':'ok',received_at:new Date().toISOString(),data:body};\nmsg.topic='gateway.response';return msg;",
+    "outputs": 1,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": []
+  },
+  {
+    "id": "f2cb06c48da7510a",
+    "type": "link call",
+    "z": "81836be24ab952ff",
+    "name": "CALL → FASTAPI · Bootstrap",
+    "links": [
+      "f9fad760eafe5047"
+    ],
+    "linkType": "static",
+    "timeout": "45",
+    "x": 700,
+    "y": 150,
+    "wires": [
+      [
+        "4ad9311a4a9157c7"
+      ]
+    ]
+  },
+  {
+    "id": "4ad9311a4a9157c7",
+    "type": "function",
+    "z": "81836be24ab952ff",
+    "name": "Normalizar respuesta FastAPI",
+    "x": 980,
+    "y": 150,
+    "wires": [
+      [
+        "ac91d3238f61537d"
+      ]
+    ],
+    "func": "const body=msg.payload;\nmsg.payload={kind:'response',request_id:msg.request_id||msg._msgid||'unknown',topic:msg._request_topic||msg.topic,status:(msg.statusCode>=400)?'error':'ok',received_at:new Date().toISOString(),data:body};\nmsg.topic='gateway.response';return msg;",
+    "outputs": 1,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": []
+  },
+  {
+    "id": "fb557dafcb86537c",
+    "type": "link call",
+    "z": "81836be24ab952ff",
+    "name": "CALL → OPENAI",
+    "links": [
+      "26612278c1505b16"
+    ],
+    "linkType": "static",
+    "timeout": "45",
+    "x": 700,
+    "y": 220,
+    "wires": [
+      [
+        "399f2c21d9ef5599"
+      ]
+    ]
+  },
+  {
+    "id": "399f2c21d9ef5599",
+    "type": "function",
+    "z": "81836be24ab952ff",
+    "name": "Normalizar respuesta RAG",
+    "x": 980,
+    "y": 220,
+    "wires": [
+      [
+        "ac91d3238f61537d"
+      ]
+    ],
+    "func": "const body=msg.payload;\nmsg.payload={kind:'response',request_id:msg.request_id||msg._msgid||'unknown',topic:msg._request_topic||msg.topic,status:(msg.statusCode>=400)?'error':'ok',received_at:new Date().toISOString(),data:body};\nmsg.topic='gateway.response';return msg;",
+    "outputs": 1,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": []
+  },
+  {
+    "id": "83285b00c43d566e",
+    "type": "link call",
+    "z": "81836be24ab952ff",
+    "name": "CALL → SQLITE",
+    "links": [
+      "2b221a4016575e5c"
+    ],
+    "linkType": "static",
+    "timeout": "45",
+    "x": 700,
+    "y": 290,
+    "wires": [
+      [
+        "da775f6e64d657a2"
+      ]
+    ]
+  },
+  {
+    "id": "da775f6e64d657a2",
+    "type": "function",
+    "z": "81836be24ab952ff",
+    "name": "Normalizar respuesta sqlite",
+    "x": 980,
+    "y": 290,
+    "wires": [
+      [
+        "ac91d3238f61537d"
+      ]
+    ],
+    "func": "const body=msg.payload;\nmsg.payload={kind:'response',request_id:msg.request_id||msg._msgid||'unknown',topic:msg._request_topic||msg.topic,status:(msg.statusCode>=400)?'error':'ok',received_at:new Date().toISOString(),data:body};\nmsg.topic='gateway.response';return msg;",
+    "outputs": 1,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": []
+  },
+  {
+    "id": "d98d50340af65231",
+    "type": "link call",
+    "z": "81836be24ab952ff",
+    "name": "CALL → HISTORIAL DE EVENTOS",
+    "links": [
+      "81209855d90a5017"
+    ],
+    "linkType": "static",
+    "timeout": "45",
+    "x": 700,
+    "y": 360,
+    "wires": [
+      [
+        "fd9fe4db9f805385"
+      ]
+    ]
+  },
+  {
+    "id": "fd9fe4db9f805385",
+    "type": "function",
+    "z": "81836be24ab952ff",
+    "name": "Normalizar respuesta de eventos",
+    "x": 980,
+    "y": 360,
+    "wires": [
+      [
+        "ac91d3238f61537d"
+      ]
+    ],
+    "func": "const body=msg.payload;\nmsg.payload={kind:'response',request_id:msg.request_id||msg._msgid||'unknown',topic:msg._request_topic||msg.topic,status:(msg.statusCode>=400)?'error':'ok',received_at:new Date().toISOString(),data:body};\nmsg.topic='gateway.response';return msg;",
+    "outputs": 1,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": []
+  },
+  {
+    "id": "12308f1812e2515a",
+    "type": "link call",
+    "z": "81836be24ab952ff",
+    "name": "CALL → REPORTS",
+    "links": [
+      "eb47c766d25f57e4"
+    ],
+    "linkType": "static",
+    "timeout": "45",
+    "x": 700,
+    "y": 430,
+    "wires": [
+      [
+        "9d52f9857a455fdc"
+      ]
+    ]
+  },
+  {
+    "id": "9d52f9857a455fdc",
+    "type": "function",
+    "z": "81836be24ab952ff",
+    "name": "Normalizar respuesta reports",
+    "x": 980,
+    "y": 430,
+    "wires": [
+      [
+        "ac91d3238f61537d"
+      ]
+    ],
+    "func": "const body=msg.payload;\nmsg.payload={kind:'response',request_id:msg.request_id||msg._msgid||'unknown',topic:msg._request_topic||msg.topic,status:(msg.statusCode>=400)?'error':'ok',received_at:new Date().toISOString(),data:body};\nmsg.topic='gateway.response';return msg;",
+    "outputs": 1,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": []
+  },
+  {
+    "id": "b3a7bab877da5bc9",
+    "type": "function",
+    "z": "81836be24ab952ff",
+    "name": "Topic no reconocido",
+    "x": 420,
+    "y": 600,
+    "wires": [
+      [
+        "9b5b952219d953b7"
+      ]
+    ],
+    "func": "msg.error={message:'msg.topic no reconocido',source:'FLOW_MAIN',code:'UNKNOWN_TOPIC'};return msg;",
+    "outputs": 1,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": []
+  },
+  {
+    "id": "ac91d3238f61537d",
+    "type": "link out",
+    "z": "81836be24ab952ff",
+    "name": "BUS → Dashboard (respuestas)",
+    "mode": "link",
+    "links": [
+      "7451f79b62f2520e"
+    ],
+    "x": 1200,
+    "y": 120,
+    "wires": []
+  },
+  {
+    "id": "1c084386044b52fc",
+    "type": "link in",
+    "z": "81836be24ab952ff",
+    "name": "BUS · eventos FastAPI",
+    "links": [],
+    "x": 150,
+    "y": 120,
+    "wires": [
+      [
+        "e30856414dee5906"
+      ]
+    ]
+  },
+  {
+    "id": "e30856414dee5906",
+    "type": "function",
+    "z": "81836be24ab952ff",
+    "name": "Validar WS externo y normalizar evento",
+    "x": 420,
+    "y": 700,
+    "wires": [
+      [
+        "ceb5e24a381e5d35"
+      ],
+      [
+        "9b5b952219d953b7"
+      ]
+    ],
+    "func": "let e=msg.payload;\nif(typeof e==='string'){\n  try{e=JSON.parse(e);}catch(err){\n    msg.error={message:'Evento WS no es JSON',source:'WS',code:'INVALID_JSON'};\n    return [null,msg];\n  }\n}\nconst token=env.get('NODE_RED_MONITOR_TOKEN');\nif(!e||!token||e.token!==token){\n  node.warn('WS externo rechazado: token inválido');\n  return null;\n}\ndelete e.token;\nmsg.payload=e;\nmsg.request_id=e.request_id||('evt-'+Date.now());\nmsg.topic='event.'+(e.type||'unknown');\nmsg.received_at=new Date().toISOString();\nreturn msg;",
+    "outputs": 2,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": []
+  },
+  {
+    "id": "ceb5e24a381e5d35",
+    "type": "link out",
+    "z": "81836be24ab952ff",
+    "name": "BUS EVENTOS · fanout",
+    "mode": "link",
+    "links": [
+      "1f2789500c3b501c",
+      "772a73b35428516e",
+      "761ccc7dccef5b1b"
+    ],
+    "x": 1200,
+    "y": 120,
+    "wires": []
+  },
+  {
+    "id": "742ece2573b15e2d",
+    "type": "link in",
+    "z": "81836be24ab952ff",
+    "name": "BUS · errores centralizados",
+    "links": [],
+    "x": 150,
+    "y": 120,
+    "wires": [
+      [
+        "ecbfefeeb8ac5b44"
+      ]
+    ]
+  },
+  {
+    "id": "ecbfefeeb8ac5b44",
+    "type": "function",
+    "z": "81836be24ab952ff",
+    "name": "Gestor central de errores",
+    "x": 450,
+    "y": 850,
+    "wires": [
+      [
+        "9b5b952219d953b7"
+      ]
+    ],
+    "func": "const e=msg.error||msg.payload||{};msg.payload={kind:'error',request_id:msg.request_id||msg._msgid||'unknown',source:e.source||'Node-RED',code:e.code||e.name||'FLOW_ERROR',message:String(e.message||e).slice(0,500),timestamp:new Date().toISOString()};msg.topic='gateway.error';return msg;",
+    "outputs": 1,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": []
+  },
+  {
+    "id": "9b5b952219d953b7",
+    "type": "link out",
+    "z": "81836be24ab952ff",
+    "name": "BUS ERRORES → HMI",
+    "mode": "link",
+    "links": [
+      "1f2789500c3b501c"
+    ],
+    "x": 1200,
+    "y": 120,
+    "wires": []
+  },
+  {
+    "id": "9f6421ce26ea5c98",
+    "type": "catch",
+    "z": "81836be24ab952ff",
+    "name": "Errores del orquestador",
+    "x": 1000,
+    "y": 850,
+    "wires": [
+      [
+        "9b5b952219d953b7"
+      ]
+    ],
+    "scope": null,
+    "uncaught": false
+  },
+  {
+    "id": "4b20ff4b42915dd2",
+    "type": "websocket-listener",
+    "path": "/industrial/events",
+    "wholemsg": "false"
+  },
+  {
+    "id": "5571d4a4e4ba5953",
+    "type": "websocket in",
+    "z": "81836be24ab952ff",
+    "name": "WebSocket externo → Node-RED (opcional)",
+    "x": 150,
+    "y": 950,
+    "wires": [
+      [
+        "1c084386044b52fc"
+      ]
+    ],
+    "server": "4b20ff4b42915dd2",
+    "client": "",
+    "mode": "server",
+    "wholemsg": "false"
+  },
+  {
+    "id": "3a13599b8785552e",
+    "type": "link in",
+    "z": "ec85c0e138195d76",
+    "name": "PLC_SNAPSHOT_IN",
+    "links": [],
+    "x": 150,
+    "y": 120,
+    "wires": [
+      [
+        "def519d1819157c6"
+      ]
+    ]
+  },
+  {
+    "id": "def519d1819157c6",
+    "type": "function",
+    "z": "ec85c0e138195d76",
+    "name": "Preparar snapshot SCADA desde FastAPI",
+    "x": 430,
+    "y": 120,
+    "wires": [
+      [
+        "be31bece2afd59f5"
+      ]
+    ],
+    "func": "const base=env.get('FASTAPI_BASE_URL')||'http://127.0.0.1:8000';\nmsg.method='GET';\nmsg.url=base+'/api/v1/status';\nmsg.headers={'Accept':'application/json'};\nreturn msg;",
+    "outputs": 1,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": []
+  },
+  {
+    "id": "be31bece2afd59f5",
+    "type": "http request",
+    "z": "ec85c0e138195d76",
+    "name": "FastAPI · GET DB100 snapshot",
+    "x": 700,
+    "y": 120,
+    "wires": [
+      [
+        "953a588c5e71599e"
+      ]
+    ],
+    "method": "use",
+    "ret": "obj",
+    "paytoqs": "ignore",
+    "url": "",
+    "tls": "",
+    "persist": false,
+    "proxy": "",
+    "insecureHTTPParser": false,
+    "authType": "",
+    "senderr": true,
+    "headers": []
+  },
+  {
+    "id": "953a588c5e71599e",
+    "type": "function",
+    "z": "ec85c0e138195d76",
+    "name": "Normalizar snapshot SCADA (API)",
+    "x": 970,
+    "y": 120,
+    "wires": [
+      [
+        "74de64a806a7553b"
+      ]
+    ],
+    "func": "const s=msg.statusCode||0;const b=msg.payload;msg.payload={status:s>=200&&s<300?'ok':'error',http_status:s,data:b?.data||b,request_id:msg.request_id};if(s>=400)node.error(b?.detail||'Error leyendo DB100',msg);return msg;",
+    "outputs": 1,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": []
+  },
+  {
+    "id": "74de64a806a7553b",
+    "type": "link out",
+    "z": "ec85c0e138195d76",
+    "name": "RETURN → Link Call",
+    "mode": "return",
+    "links": [],
+    "x": 1200,
+    "y": 120,
+    "wires": []
+  },
+  {
+    "id": "0a8d6124f4805ced",
+    "type": "catch",
+    "z": "ec85c0e138195d76",
+    "name": "Errores PLC",
+    "x": 1000,
+    "y": 850,
+    "wires": [
+      [
+        "0625d8cb14525e19"
+      ]
+    ],
+    "scope": null,
+    "uncaught": false
+  },
+  {
+    "id": "f9fad760eafe5047",
+    "type": "link in",
+    "z": "991a121728fc5e69",
+    "name": "FASTAPI_OPS_IN",
+    "links": [],
+    "x": 150,
+    "y": 120,
+    "wires": [
+      [
+        "e07c1223e6d45720"
+      ]
+    ]
+  },
+  {
+    "id": "e07c1223e6d45720",
+    "type": "function",
+    "z": "991a121728fc5e69",
+    "name": "Preparar bootstrap FastAPI",
+    "x": 450,
+    "y": 120,
+    "wires": [
+      [
+        "e7e5f4d0015d589c"
+      ]
+    ],
+    "func": "const base=env.get('FASTAPI_BASE_URL')||'http://127.0.0.1:8000';\nmsg.method='GET';\nmsg.url=base+'/api/v1/bootstrap';\nmsg.headers={'Accept':'application/json'};\nreturn msg;",
+    "outputs": 1,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": []
+  },
+  {
+    "id": "e7e5f4d0015d589c",
+    "type": "http request",
+    "z": "991a121728fc5e69",
+    "name": "GET /internal/nodered/ops",
+    "x": 700,
+    "y": 120,
+    "wires": [
+      [
+        "e28d9a83db48592d"
+      ]
+    ],
+    "method": "use",
+    "ret": "obj",
+    "paytoqs": "ignore",
+    "url": "",
+    "tls": "",
+    "persist": false,
+    "proxy": "",
+    "insecureHTTPParser": false,
+    "authType": "",
+    "senderr": true,
+    "headers": []
+  },
+  {
+    "id": "e28d9a83db48592d",
+    "type": "function",
+    "z": "991a121728fc5e69",
+    "name": "Normalizar bootstrap de plataforma",
+    "x": 970,
+    "y": 120,
+    "wires": [
+      [
+        "902a62df31185bef"
+      ]
+    ],
+    "func": "const s=msg.statusCode||0;const b=msg.payload;msg.payload={status:s>=200&&s<300?'ok':'error',http_status:s,data:b};if(s>=400)node.error(b?.detail||'FastAPI ops no disponible',msg);return msg;",
+    "outputs": 1,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": []
+  },
+  {
+    "id": "902a62df31185bef",
+    "type": "link out",
+    "z": "991a121728fc5e69",
+    "name": "RETURN → Link Call",
+    "mode": "return",
+    "links": [],
+    "x": 1200,
+    "y": 120,
+    "wires": []
+  },
+  {
+    "id": "8c13be671e595831",
+    "type": "catch",
+    "z": "991a121728fc5e69",
+    "name": "Errores FastAPI",
+    "x": 1000,
+    "y": 850,
+    "wires": [
+      [
+        "d36599e4694a5167"
+      ]
+    ],
+    "scope": null,
+    "uncaught": false
+  },
+  {
+    "id": "26612278c1505b16",
+    "type": "link in",
+    "z": "cee9fcbb330854c6",
+    "name": "OPENAI_CHAT_IN",
+    "links": [],
+    "x": 150,
+    "y": 120,
+    "wires": [
+      [
+        "7f4b405ca8f85c2f"
+      ]
+    ]
+  },
+  {
+    "id": "7f4b405ca8f85c2f",
+    "type": "function",
+    "z": "cee9fcbb330854c6",
+    "name": "Preparar consulta RAG FastAPI",
+    "x": 430,
+    "y": 120,
+    "wires": [
+      [
+        "09f27ea1334e5b14"
+      ]
+    ],
+    "func": "const q=msg.payload||{};\nconst query=String(q.question||q.query||'').trim();\nif(!query){node.error('La pregunta no puede estar vacía',msg);return null;}\nconst base=env.get('FASTAPI_BASE_URL')||'http://127.0.0.1:8000';\nmsg.method='POST';\nmsg.url=base+'/api/v1/rag/ask';\nmsg.headers={'Content-Type':'application/json','Accept':'application/json'};\nmsg.payload={query,preferred_provider:'auto',web_search_mode:'always'};\nreturn msg;",
+    "outputs": 1,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": []
+  },
+  {
+    "id": "09f27ea1334e5b14",
+    "type": "http request",
+    "z": "cee9fcbb330854c6",
+    "name": "FastAPI · POST /api/v1/rag/ask",
+    "x": 1230,
+    "y": 120,
+    "wires": [
+      [
+        "25dd5663a712585a"
+      ]
+    ],
+    "method": "use",
+    "ret": "obj",
+    "paytoqs": "ignore",
+    "url": "",
+    "tls": "",
+    "persist": false,
+    "proxy": "",
+    "insecureHTTPParser": false,
+    "authType": "",
+    "senderr": true,
+    "headers": []
+  },
+  {
+    "id": "25dd5663a712585a",
+    "type": "function",
+    "z": "cee9fcbb330854c6",
+    "name": "Normalizar respuesta RAG",
+    "x": 1510,
+    "y": 120,
+    "wires": [
+      [
+        "2f3d151b5dc258e9"
+      ]
+    ],
+    "func": "const s=Number(msg.statusCode||0);\nconst b=msg.payload||{};\nconst ok=s>=200&&s<300;\nmsg.payload={\n  status:ok?'ok':'error',\n  provider:b.provider||b.metadata?.provider||'configured',\n  answer:b.answer||b.response||b.message||b.detail||(typeof b==='string'?b:JSON.stringify(b)),\n  model:b.model||b.metadata?.model,\n  latency_ms:b.latency_ms,\n  sources:b.sources||b.citations||[],\n  request_id:msg.request_id||msg._msgid,\n  http_status:s\n};\nif(!ok) node.error(b.detail||'Error en /api/v1/rag/ask',msg);\nreturn msg;",
+    "outputs": 1,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": []
+  },
+  {
+    "id": "2f3d151b5dc258e9",
+    "type": "link out",
+    "z": "cee9fcbb330854c6",
+    "name": "RETURN → Link Call",
+    "mode": "return",
+    "links": [],
+    "x": 1200,
+    "y": 120,
+    "wires": []
+  },
+  {
+    "id": "60c75e648dac5fe2",
+    "type": "catch",
+    "z": "cee9fcbb330854c6",
+    "name": "Errores OpenAI",
+    "x": 1000,
+    "y": 850,
+    "wires": [
+      [
+        "4efab6f2e93c5d79"
+      ]
+    ],
+    "scope": null,
+    "uncaught": false
+  },
+  {
+    "id": "2b221a4016575e5c",
+    "type": "link in",
+    "z": "d9088803118f5663",
+    "name": "SQLITE_METRICS_IN",
+    "links": [],
+    "x": 150,
+    "y": 120,
+    "wires": [
+      [
+        "561b64354feb50ee"
+      ]
+    ]
+  },
+  {
+    "id": "561b64354feb50ee",
+    "type": "function",
+    "z": "d9088803118f5663",
+    "name": "Preparar estado de base de datos",
+    "x": 450,
+    "y": 120,
+    "wires": [
+      [
+        "4f4dc49d38a854f9"
+      ]
+    ],
+    "func": "const base=env.get('FASTAPI_BASE_URL')||'http://127.0.0.1:8000';\nmsg.method='GET';\nmsg.url=base+'/api/v1/db/status';\nmsg.headers={'Accept':'application/json'};\nreturn msg;",
+    "outputs": 1,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": []
+  },
+  {
+    "id": "4f4dc49d38a854f9",
+    "type": "http request",
+    "z": "d9088803118f5663",
+    "name": "FastAPI · GET /api/v1/db/status",
+    "x": 700,
+    "y": 120,
+    "wires": [
+      [
+        "c6c1d67c33e05cc2"
+      ]
+    ],
+    "method": "use",
+    "ret": "obj",
+    "paytoqs": "ignore",
+    "url": "",
+    "tls": "",
+    "persist": false,
+    "proxy": "",
+    "insecureHTTPParser": false,
+    "authType": "",
+    "senderr": true,
+    "headers": []
+  },
+  {
+    "id": "c6c1d67c33e05cc2",
+    "type": "function",
+    "z": "d9088803118f5663",
+    "name": "Normalizar métricas de base de datos",
+    "x": 970,
+    "y": 120,
+    "wires": [
+      [
+        "ac2bc4cbafb45a86"
+      ]
+    ],
+    "func": "const s=Number(msg.statusCode||0);\nconst d=msg.payload||{};\nmsg.payload={\n  status:s>=200&&s<300?'ok':'error',\n  engine:d.active_engine||d.engine||'unknown',\n  fallback_active:Boolean(d.fallback_active),\n  status_detail:d.status||null,\n  records:d.records||{},\n  file_size_bytes:d.file_size_bytes,\n  journal_mode:d.journal_mode,\n  http_status:s\n};\nif(s>=400) node.error(d.detail||'No se pudo consultar /api/v1/db/status',msg);\nreturn msg;",
+    "outputs": 1,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": []
+  },
+  {
+    "id": "ac2bc4cbafb45a86",
+    "type": "link out",
+    "z": "d9088803118f5663",
+    "name": "RETURN → Link Call",
+    "mode": "return",
+    "links": [],
+    "x": 1200,
+    "y": 120,
+    "wires": []
+  },
+  {
+    "id": "d029ac6055405187",
+    "type": "catch",
+    "z": "d9088803118f5663",
+    "name": "Errores SQLite",
+    "x": 1000,
+    "y": 850,
+    "wires": [
+      [
+        "e04b1d1006675829"
+      ]
+    ],
+    "scope": null,
+    "uncaught": false
+  },
+  {
+    "id": "81209855d90a5017",
+    "type": "link in",
+    "z": "71a47a4cc2cf5ea9",
+    "name": "EVENTS_HISTORY_IN",
+    "links": [],
+    "x": 150,
+    "y": 120,
+    "wires": [
+      [
+        "71c902a214935cc8"
+      ]
+    ]
+  },
+  {
+    "id": "71c902a214935cc8",
+    "type": "function",
+    "z": "71a47a4cc2cf5ea9",
+    "name": "Preparar consulta de eventos persistidos",
+    "x": 450,
+    "y": 120,
+    "wires": [
+      [
+        "e269ad6f87775c8d"
+      ]
+    ],
+    "func": "const base=env.get('FASTAPI_BASE_URL')||'http://127.0.0.1:8000';\nconst limit=Math.min(500,Math.max(1,Number(msg.payload?.limit||100)));\nmsg.method='GET';\nmsg.url=base+'/api/v1/db/events?limit='+limit;\nmsg.headers={'Accept':'application/json'};\nreturn msg;",
+    "outputs": 1,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": []
+  },
+  {
+    "id": "e269ad6f87775c8d",
+    "type": "http request",
+    "z": "71a47a4cc2cf5ea9",
+    "name": "FastAPI · GET /api/v1/db/events",
+    "x": 700,
+    "y": 120,
+    "wires": [
+      [
+        "35efec70078f533e"
+      ]
+    ],
+    "method": "use",
+    "ret": "obj",
+    "paytoqs": "ignore",
+    "url": "",
+    "tls": "",
+    "persist": false,
+    "proxy": "",
+    "insecureHTTPParser": false,
+    "authType": "",
+    "senderr": true,
+    "headers": []
+  },
+  {
+    "id": "35efec70078f533e",
+    "type": "function",
+    "z": "71a47a4cc2cf5ea9",
+    "name": "Normalizar historial de eventos",
+    "x": 1510,
+    "y": 120,
+    "wires": [
+      [
+        "f5fe117943595691"
+      ]
+    ],
+    "func": "const s=Number(msg.statusCode||0);\nconst items=msg.payload?.items||[];\nmsg.payload={status:s>=200&&s<300?'ok':'error',items,count:items.length,request_id:msg.request_id||msg._msgid,http_status:s};\nif(s>=400)node.error('Error consultando /api/v1/db/events',msg);\nreturn msg;",
+    "outputs": 1,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": []
+  },
+  {
+    "id": "f5fe117943595691",
+    "type": "link out",
+    "z": "71a47a4cc2cf5ea9",
+    "name": "RETURN → Link Call",
+    "mode": "return",
+    "links": [],
+    "x": 1200,
+    "y": 120,
+    "wires": []
+  },
+  {
+    "id": "772a73b35428516e",
+    "type": "link in",
+    "z": "71a47a4cc2cf5ea9",
+    "name": "EVENTS_IN · alarmas y telemetría",
+    "links": [],
+    "x": 150,
+    "y": 120,
+    "wires": [
+      [
+        "d34ed867f62c54cd"
+      ]
+    ]
+  },
+  {
+    "id": "d34ed867f62c54cd",
+    "type": "function",
+    "z": "71a47a4cc2cf5ea9",
+    "name": "Clasificar evento recibido",
+    "x": 430,
+    "y": 360,
+    "wires": [
+      [
+        "4f95bf759c425dfa"
+      ]
+    ],
+    "func": "const e=msg.payload||{};if(e.type==='alarm'){flow.set('last_alarm',e);node.status({fill:e.active?'red':'green',shape:'dot',text:e.alarm_code||'alarm'});}flow.set('last_event_at',msg.received_at||new Date().toISOString());return msg;",
+    "outputs": 1,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": []
+  },
+  {
+    "id": "4f95bf759c425dfa",
+    "type": "debug",
+    "z": "71a47a4cc2cf5ea9",
+    "name": "Evento recibido",
+    "x": 700,
+    "y": 360,
+    "wires": [],
+    "active": true,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": false,
+    "complete": "payload",
+    "targetType": "msg"
+  },
+  {
+    "id": "50d7c1eec1a35372",
+    "type": "catch",
+    "z": "71a47a4cc2cf5ea9",
+    "name": "Errores de alarmas",
+    "x": 1000,
+    "y": 850,
+    "wires": [
+      [
+        "91190dcca2675d98"
+      ]
+    ],
+    "scope": null,
+    "uncaught": false
+  },
+  {
+    "id": "eb47c766d25f57e4",
+    "type": "link in",
+    "z": "79930c446b4e5252",
+    "name": "REPORT_SUMMARY_IN",
+    "links": [],
+    "x": 150,
+    "y": 120,
+    "wires": [
+      [
+        "9d3906efcc365156"
+      ]
+    ]
+  },
+  {
+    "id": "9d3906efcc365156",
+    "type": "function",
+    "z": "79930c446b4e5252",
+    "name": "Preparar bootstrap para informe",
+    "x": 450,
+    "y": 120,
+    "wires": [
+      [
+        "b9a453e955ee5377"
+      ]
+    ],
+    "func": "const base=env.get('FASTAPI_BASE_URL')||'http://127.0.0.1:8000';\nmsg.method='GET';\nmsg.url=base+'/api/v1/bootstrap';\nmsg.headers={'Accept':'application/json'};\nreturn msg;",
+    "outputs": 1,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": []
+  },
+  {
+    "id": "b9a453e955ee5377",
+    "type": "http request",
+    "z": "79930c446b4e5252",
+    "name": "FastAPI · GET /api/v1/bootstrap",
+    "x": 700,
+    "y": 120,
+    "wires": [
+      [
+        "472f68ef26da5b20"
+      ]
+    ],
+    "method": "use",
+    "ret": "obj",
+    "paytoqs": "ignore",
+    "url": "",
+    "tls": "",
+    "persist": false,
+    "proxy": "",
+    "insecureHTTPParser": false,
+    "authType": "",
+    "senderr": true,
+    "headers": []
+  },
+  {
+    "id": "472f68ef26da5b20",
+    "type": "function",
+    "z": "79930c446b4e5252",
+    "name": "Construir resumen operativo desde bootstrap",
+    "x": 970,
+    "y": 120,
+    "wires": [
+      [
+        "0c515ef7d7265d88"
+      ]
+    ],
+    "func": "const b=msg.payload||{};\nconst s=b.snapshot||{};\nconst p=s.plc||{};\nconst db=b.system?.database||{};\nconst rag=b.rag_overview||{};\nmsg.payload={\n  status:'ok',\n  generated_at:new Date().toISOString(),\n  request_id:msg.request_id||msg._msgid,\n  summary:{\n    backend:b.ok?'online':'unknown',\n    version:b.system?.version||'unknown',\n    plc_state:p.state||'unknown',\n    plc_connected:p.connected??null,\n    database_engine:db.active_engine||'unknown',\n    database_fallback:Boolean(db.fallback_active),\n    rag:rag.status||'available'\n  },\n  notes:[\n    'Datos obtenidos desde GET /api/v1/bootstrap.',\n    'El snapshot representa el estado SCADA entregado por FastAPI.',\n    'No constituye evidencia de conexión física con CPU S7-1200 ni lectura real de DB100.'\n  ]\n};\nreturn msg;",
+    "outputs": 1,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": []
+  },
+  {
+    "id": "0c515ef7d7265d88",
+    "type": "link out",
+    "z": "79930c446b4e5252",
+    "name": "RETURN → Link Call",
+    "mode": "return",
+    "links": [],
+    "x": 1200,
+    "y": 120,
+    "wires": []
+  },
+  {
+    "id": "761ccc7dccef5b1b",
+    "type": "link in",
+    "z": "79930c446b4e5252",
+    "name": "EVENTS_IN · contexto de informes",
+    "links": [],
+    "x": 150,
+    "y": 120,
+    "wires": [
+      [
+        "c3a392f9c6585b0b"
+      ]
+    ]
+  },
+  {
+    "id": "c3a392f9c6585b0b",
+    "type": "function",
+    "z": "79930c446b4e5252",
+    "name": "Actualizar contexto de eventos",
+    "x": 430,
+    "y": 360,
+    "wires": [],
+    "func": "flow.set('last_event',msg.payload);flow.set('last_event_received_at',msg.received_at||new Date().toISOString());return null;",
+    "outputs": 1,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": []
+  },
+  {
+    "id": "978241b83f575c83",
+    "type": "catch",
+    "z": "79930c446b4e5252",
+    "name": "Errores de informes",
+    "x": 1000,
+    "y": 850,
+    "wires": [
+      [
+        "821d9f2f97b055e7"
+      ]
+    ],
+    "scope": null,
+    "uncaught": false
+  },
+  {
+    "id": "8616f849eaa255bf",
+    "type": "link out",
+    "z": "881555c2970e576b",
+    "name": "HMI → BUS MAIN",
+    "mode": "link",
+    "links": [
+      "e53cfbee250c5b4c"
+    ],
+    "x": 1200,
+    "y": 120,
+    "wires": []
+  },
+  {
+    "id": "7451f79b62f2520e",
+    "type": "link in",
+    "z": "881555c2970e576b",
+    "name": "RESPONSES_IN",
+    "links": [],
+    "x": 150,
+    "y": 120,
+    "wires": [
+      [
+        "a5cf2bb642155f15"
+      ]
+    ]
+  },
+  {
+    "id": "a5cf2bb642155f15",
+    "type": "ui_template",
+    "z": "881555c2970e576b",
+    "name": "Consola de respuestas",
+    "x": 430,
+    "y": 650,
+    "wires": [],
+    "group": "29d0a5900b82531e",
+    "order": 1,
+    "width": 12,
+    "height": 7,
+    "format": "<div style='padding:12px;font-family:Arial'><h3>Industrial Gateway · Respuestas</h3><div ng-if='msg.payload.kind===\"response\"'><b>{{msg.payload.topic}}</b> · {{msg.payload.status}}<p><small>request_id: {{msg.payload.request_id}}</small></p><pre style='white-space:pre-wrap;max-height:320px;overflow:auto'>{{msg.payload.data | json}}</pre></div></div>",
+    "storeOutMessages": true,
+    "fwdInMessages": true,
+    "resendOnRefresh": true,
+    "templateScope": "local",
+    "className": ""
+  },
+  {
+    "id": "1f2789500c3b501c",
+    "type": "link in",
+    "z": "881555c2970e576b",
+    "name": "EVENTS_IN",
+    "links": [],
+    "x": 150,
+    "y": 120,
+    "wires": [
+      [
+        "035eeecea44d5974"
+      ]
+    ]
+  },
+  {
+    "id": "035eeecea44d5974",
+    "type": "ui_template",
+    "z": "881555c2970e576b",
+    "name": "Eventos y errores en vivo",
+    "x": 430,
+    "y": 800,
+    "wires": [],
+    "group": "c803c38b379d5bee",
+    "order": 1,
+    "width": 12,
+    "height": 7,
+    "format": "<div style='padding:12px;font-family:Arial'><h3>Bus de eventos · {{msg.topic}}</h3><p><b>request_id:</b> {{msg.payload.request_id}}</p><pre style='white-space:pre-wrap;max-height:320px;overflow:auto'>{{msg.payload | json}}</pre></div>",
+    "storeOutMessages": true,
+    "fwdInMessages": true,
+    "resendOnRefresh": true,
+    "templateScope": "local",
+    "className": ""
+  },
+  {
+    "id": "b005930482705b1c",
+    "type": "function",
+    "z": "881555c2970e576b",
+    "name": "Crear envelope + request_id",
+    "x": 750,
+    "y": 520,
+    "wires": [
+      [
+        "8616f849eaa255bf"
+      ]
+    ],
+    "func": "msg.request_id=msg.request_id||('nr-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,9));msg._request_topic=msg.topic;msg.meta={source:'dashboard',schema_version:'1.3',created_at:new Date().toISOString()};if(msg.topic==='ai.chat'){msg.payload={question:String(msg.payload?.question||''),include_plc_context:Boolean(msg.payload?.include_plc_context)};}else{msg.payload={action:msg.payload,request_id:msg.request_id};}return msg;",
+    "outputs": 1,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": []
+  },
+  {
+    "id": "3757d14c57f05c7e",
+    "type": "ui_button",
+    "z": "881555c2970e576b",
+    "name": "Estado general",
+    "x": 180,
+    "y": 160,
+    "wires": [
+      [
+        "b005930482705b1c"
+      ]
+    ],
+    "group": "8af27acd5f115bbb",
+    "order": 1,
+    "width": 3,
+    "height": 1,
+    "passthru": false,
+    "label": "Estado general",
+    "tooltip": "",
+    "color": "",
+    "bgcolor": "",
+    "className": "",
+    "icon": "",
+    "payload": "ops",
+    "payloadType": "str",
+    "topic": "platform.ops.get",
+    "topicType": "str"
+  },
+  {
+    "id": "fe63a5c4cfe05f41",
+    "type": "ui_button",
+    "z": "881555c2970e576b",
+    "name": "Leer snapshot SCADA",
+    "x": 180,
+    "y": 220,
+    "wires": [
+      [
+        "b005930482705b1c"
+      ]
+    ],
+    "group": "8af27acd5f115bbb",
+    "order": 2,
+    "width": 3,
+    "height": 1,
+    "passthru": false,
+    "label": "Leer DB100",
+    "tooltip": "",
+    "color": "",
+    "bgcolor": "",
+    "className": "",
+    "icon": "",
+    "payload": "plc",
+    "payloadType": "str",
+    "topic": "scada.snapshot.get",
+    "topicType": "str"
+  },
+  {
+    "id": "afce0ae18af95041",
+    "type": "ui_button",
+    "z": "881555c2970e576b",
+    "name": "Métricas SQLite",
+    "x": 180,
+    "y": 280,
+    "wires": [
+      [
+        "b005930482705b1c"
+      ]
+    ],
+    "group": "8af27acd5f115bbb",
+    "order": 3,
+    "width": 3,
+    "height": 1,
+    "passthru": false,
+    "label": "Métricas SQLite",
+    "tooltip": "",
+    "color": "",
+    "bgcolor": "",
+    "className": "",
+    "icon": "",
+    "payload": "sqlite",
+    "payloadType": "str",
+    "topic": "sqlite.metrics.get",
+    "topicType": "str"
+  },
+  {
+    "id": "6499445f4b105591",
+    "type": "ui_button",
+    "z": "881555c2970e576b",
+    "name": "Historial de eventos",
+    "x": 180,
+    "y": 340,
+    "wires": [
+      [
+        "b005930482705b1c"
+      ]
+    ],
+    "group": "8af27acd5f115bbb",
+    "order": 4,
+    "width": 3,
+    "height": 1,
+    "passthru": false,
+    "label": "Historial alarmas",
+    "tooltip": "",
+    "color": "",
+    "bgcolor": "",
+    "className": "",
+    "icon": "",
+    "payload": "alarms",
+    "payloadType": "str",
+    "topic": "events.list",
+    "topicType": "str"
+  },
+  {
+    "id": "388ea1adc0b95868",
+    "type": "ui_button",
+    "z": "881555c2970e576b",
+    "name": "Resumen operativo",
+    "x": 180,
+    "y": 400,
+    "wires": [
+      [
+        "b005930482705b1c"
+      ]
+    ],
+    "group": "8af27acd5f115bbb",
+    "order": 5,
+    "width": 3,
+    "height": 1,
+    "passthru": false,
+    "label": "Resumen operativo",
+    "tooltip": "",
+    "color": "",
+    "bgcolor": "",
+    "className": "",
+    "icon": "",
+    "payload": "report",
+    "payloadType": "str",
+    "topic": "reports.summary",
+    "topicType": "str"
+  },
+  {
+    "id": "c3c3e01e065a5f18",
+    "type": "ui_form",
+    "z": "881555c2970e576b",
+    "name": "Enviar pregunta al asistente",
+    "x": 180,
+    "y": 520,
+    "wires": [
+      [
+        "b005930482705b1c"
+      ]
+    ],
+    "group": "b62085f6042555c9",
+    "order": 1,
+    "width": 6,
+    "height": 4,
+    "options": [
+      {
+        "label": "Pregunta",
+        "value": "question",
+        "type": "text",
+        "required": true
+      },
+      {
+        "label": "Incluir contexto DB100",
+        "value": "include_plc_context",
+        "type": "checkbox",
+        "required": false
+      }
+    ],
+    "formValue": {
+      "question": "",
+      "include_plc_context": false
+    },
+    "payload": "",
+    "submit": "Consultar OpenAI",
+    "cancel": "Limpiar",
+    "topic": "ai.chat",
+    "splitLayout": false,
+    "className": "",
+    "fields": [
+      {
+        "name": "question",
+        "label": "Pregunta",
+        "type": "text",
+        "required": true
+      },
+      {
+        "name": "include_plc_context",
+        "label": "Incluir contexto DB100",
+        "type": "checkbox",
+        "required": false
+      }
+    ]
+  },
+  {
+    "id": "0625d8cb14525e19",
+    "type": "link out",
+    "z": "ec85c0e138195d76",
+    "name": "Enviar error al bus central",
+    "mode": "link",
+    "links": [
+      "742ece2573b15e2d"
+    ],
+    "x": 1200,
+    "y": 120,
+    "wires": []
+  },
+  {
+    "id": "d36599e4694a5167",
+    "type": "link out",
+    "z": "991a121728fc5e69",
+    "name": "Enviar error al bus central",
+    "mode": "link",
+    "links": [
+      "742ece2573b15e2d"
+    ],
+    "x": 1200,
+    "y": 120,
+    "wires": []
+  },
+  {
+    "id": "4efab6f2e93c5d79",
+    "type": "link out",
+    "z": "cee9fcbb330854c6",
+    "name": "Enviar error al bus central",
+    "mode": "link",
+    "links": [
+      "742ece2573b15e2d"
+    ],
+    "x": 1200,
+    "y": 120,
+    "wires": []
+  },
+  {
+    "id": "e04b1d1006675829",
+    "type": "link out",
+    "z": "d9088803118f5663",
+    "name": "Enviar error al bus central",
+    "mode": "link",
+    "links": [
+      "742ece2573b15e2d"
+    ],
+    "x": 1200,
+    "y": 120,
+    "wires": []
+  },
+  {
+    "id": "91190dcca2675d98",
+    "type": "link out",
+    "z": "71a47a4cc2cf5ea9",
+    "name": "Enviar error al bus central",
+    "mode": "link",
+    "links": [
+      "742ece2573b15e2d"
+    ],
+    "x": 1200,
+    "y": 120,
+    "wires": []
+  },
+  {
+    "id": "940cb50da9f55869",
+    "type": "link out",
+    "z": "881555c2970e576b",
+    "name": "Enviar error al bus central",
+    "mode": "link",
+    "links": [
+      "742ece2573b15e2d"
+    ],
+    "x": 1200,
+    "y": 120,
+    "wires": []
+  },
+  {
+    "id": "821d9f2f97b055e7",
+    "type": "link out",
+    "z": "79930c446b4e5252",
+    "name": "Enviar error al bus central",
+    "mode": "link",
+    "links": [
+      "742ece2573b15e2d"
+    ],
+    "x": 1200,
+    "y": 120,
+    "wires": []
+  },
+  {
+    "id": "f5af88cd7f9155d0",
+    "type": "catch",
+    "z": "881555c2970e576b",
+    "name": "Errores Dashboard",
+    "x": 1000,
+    "y": 850,
+    "wires": [
+      [
+        "940cb50da9f55869"
+      ]
+    ],
+    "scope": null,
+    "uncaught": false
+  },
+  {
+    "id": "24f8f171134d5919",
+    "type": "comment",
+    "z": "81836be24ab952ff",
+    "name": "Contrato del bus y límites de seguridad",
+    "x": 400,
+    "y": 1020,
+    "wires": [],
+    "info": "Contrato del bus v1.4 sincronizado con S_F_T FastAPI v6.1. Topics: scada.snapshot.get -> GET /api/v1/status (snapshot SCADA del backend; no certifica lectura física DB100), platform.ops.get -> GET /api/v1/bootstrap, ai.chat -> POST /api/v1/rag/ask (query), sqlite.metrics.get -> GET /api/v1/db/status, events.list -> GET /api/v1/db/events, reports.summary -> GET /api/v1/bootstrap. Node-RED reporta heartbeat, status y errores a POST /api/v1/node-red/events mediante X-Node-RED-Token. El dashboard FastAPI recibe estos eventos por WS /api/v1/node-red/ws. No se requiere INTERNAL_API_KEY, login JWT de servicio ni acceso directo a SQLite."
+  },
+  {
+    "id": "a101000000000001",
+    "type": "inject",
+    "z": "81836be24ab952ff",
+    "name": "Heartbeat → FastAPI (10 s)",
+    "props": [
+      {
+        "p": "payload"
+      }
+    ],
+    "repeat": "10",
+    "crontab": "",
+    "once": true,
+    "onceDelay": "1",
+    "topic": "node-red.heartbeat",
+    "payload": "",
+    "payloadType": "date",
+    "x": 180,
+    "y": 1120,
+    "wires": [
+      [
+        "a101000000000004"
+      ]
+    ]
+  },
+  {
+    "id": "a101000000000002",
+    "type": "status",
+    "z": "81836be24ab952ff",
+    "name": "Estados de nodos → FastAPI",
+    "scope": [
+      "e53cfbee250c5b4c",
+      "ddcff1da6f1456e0",
+      "e0530dff2d7e5209",
+      "198974b95351508d",
+      "f2cb06c48da7510a",
+      "4ad9311a4a9157c7",
+      "fb557dafcb86537c",
+      "399f2c21d9ef5599",
+      "83285b00c43d566e",
+      "da775f6e64d657a2",
+      "d98d50340af65231",
+      "fd9fe4db9f805385",
+      "12308f1812e2515a",
+      "9d52f9857a455fdc",
+      "b3a7bab877da5bc9",
+      "ac91d3238f61537d",
+      "1c084386044b52fc",
+      "e30856414dee5906",
+      "ceb5e24a381e5d35",
+      "742ece2573b15e2d",
+      "ecbfefeeb8ac5b44",
+      "9b5b952219d953b7",
+      "5571d4a4e4ba5953",
+      "3a13599b8785552e",
+      "def519d1819157c6",
+      "be31bece2afd59f5",
+      "953a588c5e71599e",
+      "74de64a806a7553b",
+      "f9fad760eafe5047",
+      "e07c1223e6d45720",
+      "e7e5f4d0015d589c",
+      "e28d9a83db48592d",
+      "902a62df31185bef",
+      "26612278c1505b16",
+      "7f4b405ca8f85c2f",
+      "09f27ea1334e5b14",
+      "25dd5663a712585a",
+      "2f3d151b5dc258e9",
+      "2b221a4016575e5c",
+      "561b64354feb50ee",
+      "4f4dc49d38a854f9",
+      "c6c1d67c33e05cc2",
+      "ac2bc4cbafb45a86",
+      "81209855d90a5017",
+      "71c902a214935cc8",
+      "e269ad6f87775c8d",
+      "35efec70078f533e",
+      "f5fe117943595691",
+      "772a73b35428516e",
+      "d34ed867f62c54cd",
+      "4f95bf759c425dfa",
+      "eb47c766d25f57e4",
+      "9d3906efcc365156",
+      "b9a453e955ee5377",
+      "472f68ef26da5b20",
+      "0c515ef7d7265d88",
+      "761ccc7dccef5b1b",
+      "c3a392f9c6585b0b",
+      "8616f849eaa255bf",
+      "7451f79b62f2520e",
+      "a5cf2bb642155f15",
+      "1f2789500c3b501c",
+      "035eeecea44d5974",
+      "b005930482705b1c",
+      "3757d14c57f05c7e",
+      "fe63a5c4cfe05f41",
+      "afce0ae18af95041",
+      "6499445f4b105591",
+      "388ea1adc0b95868",
+      "c3c3e01e065a5f18",
+      "0625d8cb14525e19",
+      "d36599e4694a5167",
+      "4efab6f2e93c5d79",
+      "e04b1d1006675829",
+      "91190dcca2675d98",
+      "940cb50da9f55869",
+      "821d9f2f97b055e7"
+    ],
+    "x": 180,
+    "y": 1180,
+    "wires": [
+      [
+        "a101000000000005"
+      ]
+    ]
+  },
+  {
+    "id": "a101000000000003",
+    "type": "catch",
+    "z": "81836be24ab952ff",
+    "name": "Errores de flujos → FastAPI",
+    "scope": [
+      "e53cfbee250c5b4c",
+      "ddcff1da6f1456e0",
+      "e0530dff2d7e5209",
+      "198974b95351508d",
+      "f2cb06c48da7510a",
+      "4ad9311a4a9157c7",
+      "fb557dafcb86537c",
+      "399f2c21d9ef5599",
+      "83285b00c43d566e",
+      "da775f6e64d657a2",
+      "d98d50340af65231",
+      "fd9fe4db9f805385",
+      "12308f1812e2515a",
+      "9d52f9857a455fdc",
+      "b3a7bab877da5bc9",
+      "ac91d3238f61537d",
+      "1c084386044b52fc",
+      "e30856414dee5906",
+      "ceb5e24a381e5d35",
+      "742ece2573b15e2d",
+      "ecbfefeeb8ac5b44",
+      "9b5b952219d953b7",
+      "5571d4a4e4ba5953",
+      "3a13599b8785552e",
+      "def519d1819157c6",
+      "be31bece2afd59f5",
+      "953a588c5e71599e",
+      "74de64a806a7553b",
+      "f9fad760eafe5047",
+      "e07c1223e6d45720",
+      "e7e5f4d0015d589c",
+      "e28d9a83db48592d",
+      "902a62df31185bef",
+      "26612278c1505b16",
+      "7f4b405ca8f85c2f",
+      "09f27ea1334e5b14",
+      "25dd5663a712585a",
+      "2f3d151b5dc258e9",
+      "2b221a4016575e5c",
+      "561b64354feb50ee",
+      "4f4dc49d38a854f9",
+      "c6c1d67c33e05cc2",
+      "ac2bc4cbafb45a86",
+      "81209855d90a5017",
+      "71c902a214935cc8",
+      "e269ad6f87775c8d",
+      "35efec70078f533e",
+      "f5fe117943595691",
+      "772a73b35428516e",
+      "d34ed867f62c54cd",
+      "4f95bf759c425dfa",
+      "eb47c766d25f57e4",
+      "9d3906efcc365156",
+      "b9a453e955ee5377",
+      "472f68ef26da5b20",
+      "0c515ef7d7265d88",
+      "761ccc7dccef5b1b",
+      "c3a392f9c6585b0b",
+      "8616f849eaa255bf",
+      "7451f79b62f2520e",
+      "a5cf2bb642155f15",
+      "1f2789500c3b501c",
+      "035eeecea44d5974",
+      "b005930482705b1c",
+      "3757d14c57f05c7e",
+      "fe63a5c4cfe05f41",
+      "afce0ae18af95041",
+      "6499445f4b105591",
+      "388ea1adc0b95868",
+      "c3c3e01e065a5f18",
+      "0625d8cb14525e19",
+      "d36599e4694a5167",
+      "4efab6f2e93c5d79",
+      "e04b1d1006675829",
+      "91190dcca2675d98",
+      "940cb50da9f55869",
+      "821d9f2f97b055e7"
+    ],
+    "uncaught": false,
+    "x": 180,
+    "y": 1240,
+    "wires": [
+      [
+        "a101000000000006"
+      ]
+    ]
+  },
+  {
+    "id": "a101000000000004",
+    "type": "function",
+    "z": "81836be24ab952ff",
+    "name": "Crear evento heartbeat",
+    "func": "const base=env.get('FASTAPI_BASE_URL')||'http://127.0.0.1:8000';\nconst token=env.get('NODE_RED_MONITOR_TOKEN');\nif(!token){node.warn('NODE_RED_MONITOR_TOKEN no configurado; heartbeat omitido');return null;}\nmsg.method='POST';\nmsg.url=base+'/api/v1/node-red/events';\nmsg.headers={'Content-Type':'application/json','X-Node-RED-Token':token};\nmsg.payload={event:'heartbeat',level:'info',message:'Node-RED heartbeat',flow_name:'Industrial IoT Gateway',timestamp:new Date().toISOString()};\nreturn msg;",
+    "outputs": 1,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 470,
+    "y": 1120,
+    "wires": [
+      [
+        "a101000000000007"
+      ]
+    ]
+  },
+  {
+    "id": "a101000000000005",
+    "type": "function",
+    "z": "81836be24ab952ff",
+    "name": "Crear evento de estado de nodo",
+    "func": "const base=env.get('FASTAPI_BASE_URL')||'http://127.0.0.1:8000';\nconst token=env.get('NODE_RED_MONITOR_TOKEN');\nif(!token)return null;\nconst s=msg.status||{}; const src=s.source||{};\nmsg.method='POST'; msg.url=base+'/api/v1/node-red/events';\nmsg.headers={'Content-Type':'application/json','X-Node-RED-Token':token};\nmsg.payload={event:'node_status',level:s.fill==='red'?'error':(s.fill==='yellow'?'warning':'info'),node_id:src.id||'',node_type:src.type||'',node_name:src.name||'',message:String(s.text||'status changed').slice(0,1000),timestamp:new Date().toISOString(),flow_name:'Industrial IoT Gateway'};\nreturn msg;",
+    "outputs": 1,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 490,
+    "y": 1180,
+    "wires": [
+      [
+        "a101000000000007"
+      ]
+    ]
+  },
+  {
+    "id": "a101000000000006",
+    "type": "function",
+    "z": "81836be24ab952ff",
+    "name": "Crear evento de error de flujo",
+    "func": "const base=env.get('FASTAPI_BASE_URL')||'http://127.0.0.1:8000';\nconst token=env.get('NODE_RED_MONITOR_TOKEN');\nif(!token)return null;\nconst e=msg.error||{}; const src=msg.source||e.source||{};\nmsg.method='POST'; msg.url=base+'/api/v1/node-red/events';\nmsg.headers={'Content-Type':'application/json','X-Node-RED-Token':token};\nmsg.payload={event:'node_error',level:'error',node_id:src.id||'',node_type:src.type||'',node_name:src.name||'',message:String(e.message||e.code||'Node-RED flow error').slice(0,1000),timestamp:new Date().toISOString(),flow_name:'Industrial IoT Gateway'};\nreturn msg;",
+    "outputs": 1,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 490,
+    "y": 1240,
+    "wires": [
+      [
+        "a101000000000007"
+      ]
+    ]
+  },
+  {
+    "id": "a101000000000007",
+    "type": "http request",
+    "z": "81836be24ab952ff",
+    "name": "FastAPI · POST /api/v1/node-red/events",
+    "method": "use",
+    "ret": "obj",
+    "paytoqs": "ignore",
+    "url": "",
+    "tls": "",
+    "persist": false,
+    "proxy": "",
+    "insecureHTTPParser": false,
+    "authType": "",
+    "senderr": false,
+    "headers": [],
+    "x": 850,
+    "y": 1180,
+    "wires": [
+      [
+        "a101000000000008"
+      ]
+    ]
+  },
+  {
+    "id": "a101000000000008",
+    "type": "function",
+    "z": "81836be24ab952ff",
+    "name": "Confirmar recepción monitor",
+    "func": "const s=Number(msg.statusCode||0);\nif(s<200||s>=300){node.warn('FastAPI no aceptó evento Node-RED; HTTP '+s);}\nreturn null;",
+    "outputs": 1,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 1160,
+    "y": 1180,
+    "wires": []
+  },
+  {
+    "id": "a101000000000009",
+    "type": "comment",
+    "z": "81836be24ab952ff",
+    "name": "SINCRONIZACIÓN ACTIVA · FastAPI S_F_T",
+    "info": "Node-RED env: FASTAPI_BASE_URL y NODE_RED_MONITOR_TOKEN. Heartbeat cada 10 s + status de nodos + errores de flujos se envían por POST /api/v1/node-red/events. El dashboard FastAPI recibe estos eventos por WS /api/v1/node-red/ws. En Docker, use http://host.docker.internal:8000 si FastAPI está en Windows host. El endpoint /api/v1/status devuelve snapshot SCADA del backend; no prueba por sí solo conexión física a S7-1200/DB100.",
+    "x": 540,
+    "y": 1320,
+    "wires": []
+  },
+  {
+    "id": "50ebc34c1c084c3f",
+    "type": "tab",
+    "label": "10 · TIA PORTAL S7-1200 · OPC UA",
+    "disabled": false,
+    "info": "Integración OPC UA de SOLO LECTURA con CPU Siemens S7-1200 desde TIA Portal. Configure endpoint y NodeId reales. No se generan escrituras ni órdenes de marcha."
+  },
+  {
+    "id": "0be0f62064af4ed9",
+    "type": "OpcUa-Endpoint",
+    "endpoint": "opc.tcp://192.168.0.10:4840",
+    "secpol": "None",
+    "secmode": "None",
+    "none": true,
+    "login": false,
+    "usercert": false,
+    "usercertificate": "",
+    "userprivatekey": "",
+    "name": "S7-1200 · OPC UA (CAMBIAR IP/SEGURIDAD)"
+  },
+  {
+    "id": "5d1476a3ee864b5d",
+    "type": "inject",
+    "z": "50ebc34c1c084c3f",
+    "name": "Explorar espacio OPC UA",
+    "props": [
+      {
+        "p": "payload"
+      }
+    ],
+    "repeat": "",
+    "crontab": "",
+    "once": false,
+    "onceDelay": 0.1,
+    "topic": "",
+    "payload": "browse",
+    "payloadType": "str",
+    "x": 150,
+    "y": 120,
+    "wires": [
+      [
+        "d5e398afff61439c"
+      ]
+    ]
+  },
+  {
+    "id": "d5e398afff61439c",
+    "type": "function",
+    "z": "50ebc34c1c084c3f",
+    "name": "Preparar Browse RootFolder",
+    "func": "// Browse solo lectura: RootFolder estándar OPC UA.\nmsg.topic = 'ns=0;i=84';\nmsg.action = 'browse';\nreturn msg;",
+    "outputs": 1,
+    "timeout": 0,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 420,
+    "y": 120,
+    "wires": [
+      [
+        "fc2d9eff12124518"
+      ]
+    ]
+  },
+  {
+    "id": "fc2d9eff12124518",
+    "type": "OpcUa-Client",
+    "z": "50ebc34c1c084c3f",
+    "endpoint": "0be0f62064af4ed9",
+    "action": "browse",
+    "deadbandtype": "a",
+    "deadbandvalue": 1,
+    "time": 10,
+    "timeUnit": "s",
+    "certificate": "n",
+    "localfile": "",
+    "securitymode": "None",
+    "securitypolicy": "None",
+    "name": "S7-1200 · Browse address space",
+    "x": 700,
+    "y": 120,
+    "wires": [
+      [
+        "c21d4eec5f534488"
+      ]
+    ],
+    "localkeyfile": "",
+    "folderName4PKI": "",
+    "useTransport": false,
+    "maxChunkCount": "",
+    "maxMessageSize": "",
+    "receiveBufferSize": "",
+    "sendBufferSize": ""
+  },
+  {
+    "id": "c21d4eec5f534488",
+    "type": "debug",
+    "z": "50ebc34c1c084c3f",
+    "name": "OPC UA · Browse results",
+    "active": true,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": false,
+    "complete": "true",
+    "targetType": "full",
+    "statusVal": "",
+    "statusType": "auto",
+    "x": 970,
+    "y": 120,
+    "wires": []
+  },
+  {
+    "id": "596b6f064601432c",
+    "type": "inject",
+    "z": "50ebc34c1c084c3f",
+    "name": "Leer variable DB100 (manual)",
+    "props": [
+      {
+        "p": "payload"
+      }
+    ],
+    "repeat": "",
+    "crontab": "",
+    "once": false,
+    "onceDelay": 0.1,
+    "topic": "",
+    "payload": "read",
+    "payloadType": "str",
+    "x": 150,
+    "y": 240,
+    "wires": [
+      [
+        "16e27a1e847b41db"
+      ]
+    ]
+  },
+  {
+    "id": "16e27a1e847b41db",
+    "type": "function",
+    "z": "50ebc34c1c084c3f",
+    "name": "Validar NodeId DB100 y preparar lectura",
+    "func": "// Define SFT_DB100_NODEID en el entorno Node-RED con el NodeId REAL\n// obtenido del Server Interface de TIA Portal. No se adivinan namespaces.\nconst nodeId = env.get('SFT_DB100_NODEID');\nif (!nodeId || !/^ns=\\d+;[isgb]=/.test(nodeId)) {\n  node.warn('Configura SFT_DB100_NODEID con un NodeId válido exportado desde TIA Portal');\n  return null;\n}\nmsg.topic = nodeId;\nmsg.action = 'read';\nreturn msg;",
+    "outputs": 1,
+    "timeout": 0,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 460,
+    "y": 240,
+    "wires": [
+      [
+        "bdec5a5be2e64e24"
+      ]
+    ]
+  },
+  {
+    "id": "bdec5a5be2e64e24",
+    "type": "OpcUa-Client",
+    "z": "50ebc34c1c084c3f",
+    "endpoint": "0be0f62064af4ed9",
+    "action": "read",
+    "deadbandtype": "a",
+    "deadbandvalue": 1,
+    "time": 10,
+    "timeUnit": "s",
+    "certificate": "n",
+    "localfile": "",
+    "securitymode": "None",
+    "securitypolicy": "None",
+    "name": "S7-1200 · Read DB100 variable",
+    "x": 740,
+    "y": 240,
+    "wires": [
+      [
+        "db2c2ab719b141a6"
+      ]
+    ],
+    "localkeyfile": "",
+    "folderName4PKI": "",
+    "useTransport": false,
+    "maxChunkCount": "",
+    "maxMessageSize": "",
+    "receiveBufferSize": "",
+    "sendBufferSize": ""
+  },
+  {
+    "id": "db2c2ab719b141a6",
+    "type": "debug",
+    "z": "50ebc34c1c084c3f",
+    "name": "OPC UA · DB100 value",
+    "active": true,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": true,
+    "complete": "true",
+    "targetType": "full",
+    "statusVal": "payload",
+    "statusType": "msg",
+    "x": 1010,
+    "y": 240,
+    "wires": []
+  },
+  {
+    "id": "0eed9d6afc724f80",
+    "type": "inject",
+    "z": "50ebc34c1c084c3f",
+    "name": "Suscribir variable DB100 (manual)",
+    "props": [
+      {
+        "p": "payload"
+      }
+    ],
+    "repeat": "",
+    "crontab": "",
+    "once": false,
+    "onceDelay": 0.1,
+    "topic": "",
+    "payload": "subscribe",
+    "payloadType": "str",
+    "x": 150,
+    "y": 360,
+    "wires": [
+      [
+        "28880aa8259f469f"
+      ]
+    ]
+  },
+  {
+    "id": "28880aa8259f469f",
+    "type": "function",
+    "z": "50ebc34c1c084c3f",
+    "name": "Validar NodeId y preparar suscripción",
+    "func": "// Suscripción de SOLO LECTURA. NodeId de la Server Interface del PLC.\nconst nodeId = env.get('SFT_DB100_NODEID');\nif (!nodeId || !/^ns=\\d+;[isgb]=/.test(nodeId)) {\n  node.warn('Configura SFT_DB100_NODEID con el NodeId real del DB100');\n  return null;\n}\nmsg.topic = nodeId;\nmsg.action = 'subscribe';\nmsg.payload = 1000; // intervalo de muestreo solicitado (ms)\nmsg.interval = 1000;\nmsg.queueSize = 10;\nreturn msg;",
+    "outputs": 1,
+    "timeout": 0,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 460,
+    "y": 360,
+    "wires": [
+      [
+        "658ef87c804a4fdf"
+      ]
+    ]
+  },
+  {
+    "id": "658ef87c804a4fdf",
+    "type": "OpcUa-Client",
+    "z": "50ebc34c1c084c3f",
+    "endpoint": "0be0f62064af4ed9",
+    "action": "subscribe",
+    "deadbandtype": "a",
+    "deadbandvalue": 0,
+    "time": 1,
+    "timeUnit": "s",
+    "certificate": "n",
+    "localfile": "",
+    "securitymode": "None",
+    "securitypolicy": "None",
+    "name": "S7-1200 · Subscribe DB100 variable",
+    "x": 760,
+    "y": 360,
+    "wires": [
+      [
+        "b3afa590cdea4c07"
+      ]
+    ],
+    "localkeyfile": "",
+    "folderName4PKI": "",
+    "useTransport": false,
+    "maxChunkCount": "",
+    "maxMessageSize": "",
+    "receiveBufferSize": "",
+    "sendBufferSize": ""
+  },
+  {
+    "id": "b3afa590cdea4c07",
+    "type": "debug",
+    "z": "50ebc34c1c084c3f",
+    "name": "OPC UA · subscription updates",
+    "active": true,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": true,
+    "complete": "true",
+    "targetType": "full",
+    "statusVal": "payload",
+    "statusType": "msg",
+    "x": 1040,
+    "y": 360,
+    "wires": []
+  },
+  {
+    "id": "56eedcef7ac644fa",
+    "type": "inject",
+    "z": "50ebc34c1c084c3f",
+    "name": "Cancelar suscripción (manual)",
+    "props": [
+      {
+        "p": "payload"
+      }
+    ],
+    "repeat": "",
+    "crontab": "",
+    "once": false,
+    "onceDelay": 0.1,
+    "topic": "",
+    "payload": "unsubscribe",
+    "payloadType": "str",
+    "x": 150,
+    "y": 460,
+    "wires": [
+      [
+        "16f79c2ebf464af4"
+      ]
+    ]
+  },
+  {
+    "id": "16f79c2ebf464af4",
+    "type": "function",
+    "z": "50ebc34c1c084c3f",
+    "name": "Preparar unsubscribe",
+    "func": "const nodeId = env.get('SFT_DB100_NODEID');\nif (!nodeId) return null;\nmsg.topic = nodeId;\nmsg.action = 'unsubscribe';\nreturn msg;",
+    "outputs": 1,
+    "timeout": 0,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 420,
+    "y": 460,
+    "wires": [
+      [
+        "b0e6f7f7a9be4f96"
+      ]
+    ]
+  },
+  {
+    "id": "b0e6f7f7a9be4f96",
+    "type": "OpcUa-Client",
+    "z": "50ebc34c1c084c3f",
+    "endpoint": "0be0f62064af4ed9",
+    "action": "unsubscribe",
+    "deadbandtype": "a",
+    "deadbandvalue": 0,
+    "time": 1,
+    "timeUnit": "s",
+    "certificate": "n",
+    "localfile": "",
+    "securitymode": "None",
+    "securitypolicy": "None",
+    "name": "S7-1200 · Unsubscribe",
+    "x": 700,
+    "y": 460,
+    "wires": [
+      []
+    ],
+    "localkeyfile": "",
+    "folderName4PKI": "",
+    "useTransport": false,
+    "maxChunkCount": "",
+    "maxMessageSize": "",
+    "receiveBufferSize": "",
+    "sendBufferSize": ""
+  },
+  {
+    "id": "87ea0c1ff85248df",
+    "type": "status",
+    "z": "50ebc34c1c084c3f",
+    "name": "Estado nodos OPC UA",
+    "scope": [
+      "fc2d9eff12124518",
+      "bdec5a5be2e64e24",
+      "658ef87c804a4fdf",
+      "b0e6f7f7a9be4f96"
+    ],
+    "x": 160,
+    "y": 560,
+    "wires": [
+      [
+        "8ea0f1a97ad045d5"
+      ]
+    ]
+  },
+  {
+    "id": "8ea0f1a97ad045d5",
+    "type": "function",
+    "z": "50ebc34c1c084c3f",
+    "name": "Publicar estado OPC UA al monitor",
+    "func": "const s=msg.status||{}; const src=s.source||{};\nmsg.method='POST';\nmsg.url=(env.get('SFT_MONITOR_URL')||((env.get('FASTAPI_BASE_URL')||'http://127.0.0.1:8000')+'/api/v1/node-red/events')).replace(/\\/$/,'');\nmsg.headers={'Content-Type':'application/json','X-Node-RED-Token':env.get('SFT_MONITOR_TOKEN')||env.get('NODE_RED_MONITOR_TOKEN')||''};\nmsg.payload={event:'opcua_node_status',level:s.fill==='red'?'error':'info',node_id:src.id||'',node_type:src.type||'OpcUa',node_name:src.name||'OPC UA',message:String(s.text||s.fill||'OPC UA status').slice(0,500),flow_name:'TIA Portal S7-1200 OPC UA',timestamp:new Date().toISOString()};\nreturn msg;",
+    "outputs": 1,
+    "timeout": 0,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 460,
+    "y": 560,
+    "wires": [
+      [
+        "40e7e8c9d29a4ba2"
+      ]
+    ]
+  },
+  {
+    "id": "40e7e8c9d29a4ba2",
+    "type": "http request",
+    "z": "50ebc34c1c084c3f",
+    "name": "FastAPI · reportar estado OPC UA",
+    "method": "use",
+    "ret": "obj",
+    "paytoqs": "ignore",
+    "url": "",
+    "tls": "",
+    "persist": false,
+    "proxy": "",
+    "insecureHTTPParser": false,
+    "authType": "",
+    "senderr": false,
+    "headers": [],
+    "x": 790,
+    "y": 560,
+    "wires": [
+      []
+    ]
+  },
+  {
+    "id": "d1937b21b7e94c7f",
+    "type": "catch",
+    "z": "50ebc34c1c084c3f",
+    "name": "Capturar errores OPC UA",
+    "scope": [
+      "fc2d9eff12124518",
+      "bdec5a5be2e64e24",
+      "658ef87c804a4fdf",
+      "b0e6f7f7a9be4f96"
+    ],
+    "uncaught": false,
+    "x": 160,
+    "y": 660,
+    "wires": [
+      [
+        "08749ee516be4cc1"
+      ]
+    ]
+  },
+  {
+    "id": "08749ee516be4cc1",
+    "type": "function",
+    "z": "50ebc34c1c084c3f",
+    "name": "Normalizar error OPC UA",
+    "func": "const e=msg.error||{}; const src=e.source||{};\nmsg.method='POST';\nmsg.url=(env.get('SFT_MONITOR_URL')||((env.get('FASTAPI_BASE_URL')||'http://127.0.0.1:8000')+'/api/v1/node-red/events')).replace(/\\/$/,'');\nmsg.headers={'Content-Type':'application/json','X-Node-RED-Token':env.get('SFT_MONITOR_TOKEN')||env.get('NODE_RED_MONITOR_TOKEN')||''};\nmsg.payload={event:'opcua_error',level:'error',node_id:src.id||'',node_type:src.type||'OpcUa',node_name:src.name||'OPC UA',message:String(e.message||e.code||'OPC UA communication error').slice(0,1000),flow_name:'TIA Portal S7-1200 OPC UA',timestamp:new Date().toISOString()};\nreturn msg;",
+    "outputs": 1,
+    "timeout": 0,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 440,
+    "y": 660,
+    "wires": [
+      [
+        "2473ba0c8f6e4b8f"
+      ]
+    ]
+  },
+  {
+    "id": "2473ba0c8f6e4b8f",
+    "type": "http request",
+    "z": "50ebc34c1c084c3f",
+    "name": "FastAPI · reportar error OPC UA",
+    "method": "use",
+    "ret": "obj",
+    "paytoqs": "ignore",
+    "url": "",
+    "tls": "",
+    "persist": false,
+    "proxy": "",
+    "insecureHTTPParser": false,
+    "authType": "",
+    "senderr": false,
+    "headers": [],
+    "x": 770,
+    "y": 660,
+    "wires": [
+      []
+    ]
+  },
+  {
+    "id": "0fcf91eee2114792",
+    "type": "comment",
+    "z": "50ebc34c1c084c3f",
+    "name": "ANTES DE DEPLOY · TIA PORTAL V17",
+    "info": "1) En Device configuration > OPC UA > Server, habilitar OPC UA Server de la CPU.\n2) En OPC UA communication > Server interfaces, crear una interfaz y agregar los tags del DB100. Compilar y descargar al PLC/PLCSIM compatible.\n3) Configurar usuario/rol y certificados/trust list. Security=None es solo para laboratorio aislado si la CPU lo permite; en producción usar política segura.\n4) Cambiar el endpoint de ejemplo por el endpoint real del PLC, incluida su ruta si la configuración la muestra.\n5) Definir SFT_DB100_NODEID con el NodeId REAL de una variable exportada/observada desde la Server Interface; no asumir ns=3 ni nombres.\n6) Instalar node-red-contrib-opcua. Este flujo es SOLO LECTURA: browse/read/subscribe/unsubscribe; no hay escrituras ni start/stop de motor.\n7) El flujo antiguo GET /api/v1/status conserva el snapshot del backend/simulador y no certifica conexión física.",
+    "x": 520,
+    "y": 760,
+    "wires": []
+  }
+]
