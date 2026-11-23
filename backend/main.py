@@ -1,15 +1,21 @@
 from __future__ import annotations
 
 import asyncio
+<<<<<<< HEAD
 import logging
 import time
 from contextlib import asynccontextmanager
 from typing import Any, Dict, Optional
+=======
+import time
+from contextlib import asynccontextmanager
+>>>>>>> 6b869b7 (Initial commit: S_F_T)
 
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
+<<<<<<< HEAD
 from backend.core.config import settings
 from backend.api.routers import database, node_red, pages, pid, rag, scada, system, ws
 from backend.state import app_state
@@ -25,6 +31,16 @@ def _flush_db_batch(
     """Persistir eventos, telemetría y estado fuera del event loop."""
     for event in events:
         app_state.db.insert_event(event)
+=======
+from backend.config import settings
+from backend.routers import database, pages, pid, rag, scada, system, ws
+from backend.state import app_state
+
+
+def _flush_db_batch(events, snap_for_telemetry, snap_for_state) -> None:
+    for evt in events:
+        app_state.db.insert_event(evt)
+>>>>>>> 6b869b7 (Initial commit: S_F_T)
     if snap_for_telemetry is not None:
         app_state.db.insert_telemetry_sample(snap_for_telemetry)
     if snap_for_state is not None:
@@ -32,7 +48,14 @@ def _flush_db_batch(
 
 
 async def _simulation_loop() -> None:
+<<<<<<< HEAD
     """Simulación 20 Hz, difusión WebSocket 10 Hz y persistencia periódica."""
+=======
+    """
+    Bucle principal de simulación física discreta (20 Hz), difusión de telemetría
+    por WebSocket (10 Hz) y persistencia asíncrona en PostgreSQL / SQLite.
+    """
+>>>>>>> 6b869b7 (Initial commit: S_F_T)
     tick_counter = 0
     last_telemetry_db_save = time.monotonic()
     last_state_db_save = time.monotonic()
@@ -43,13 +66,18 @@ async def _simulation_loop() -> None:
             tick_counter += 1
 
             if (
+<<<<<<< HEAD
                 tick_counter % max(1, settings.ws_broadcast_every_ticks) == 0
+=======
+                tick_counter % settings.ws_broadcast_every_ticks == 0
+>>>>>>> 6b869b7 (Initial commit: S_F_T)
                 and app_state.ws_hub.has_clients
             ):
                 await app_state.broadcast_telemetry(persist_state=False)
 
             now_mono = time.monotonic()
             pending_events = app_state.drain_pending_events(max_items=25)
+<<<<<<< HEAD
             need_telemetry_save = (
                 now_mono - last_telemetry_db_save
                 >= settings.db_telemetry_save_interval_s
@@ -60,10 +88,18 @@ async def _simulation_loop() -> None:
 
             if pending_events or need_telemetry_save or need_state_save:
                 current_snapshot = app_state.simulator.get_snapshot()
+=======
+            need_telemetry_save = (now_mono - last_telemetry_db_save) >= settings.db_telemetry_save_interval_s
+            need_state_save = (now_mono - last_state_db_save) >= settings.db_state_save_interval_s
+
+            if pending_events or need_telemetry_save or need_state_save:
+                cur_snap = app_state.simulator.get_snapshot()
+>>>>>>> 6b869b7 (Initial commit: S_F_T)
                 if need_telemetry_save:
                     last_telemetry_db_save = now_mono
                 if need_state_save:
                     last_state_db_save = now_mono
+<<<<<<< HEAD
 
                 await asyncio.to_thread(
                     _flush_db_batch,
@@ -125,6 +161,44 @@ async def lifespan(application: FastAPI):
             logger.exception("No se pudo persistir el estado final de SCADA PID")
 
         logger.info("SCADA PID detenido correctamente")
+=======
+                await asyncio.to_thread(
+                    _flush_db_batch,
+                    pending_events,
+                    cur_snap if need_telemetry_save else None,
+                    cur_snap if need_state_save else None,
+                )
+
+        except asyncio.CancelledError:
+            break
+        except Exception:
+            pass
+
+        await asyncio.sleep(settings.sim_dt_s)
+
+
+@asynccontextmanager
+async def lifespan(_app: FastAPI):
+    db_info = app_state.db.get_status()
+    engine_lbl = db_info["active_engine"].upper()
+    mode_lbl = "FALLBACK SQLITE" if db_info["fallback_active"] else engine_lbl
+    print(f"[SCADA PID DB] Motor activo: {mode_lbl} ({db_info['sqlite_path'] if db_info['active_engine'] == 'sqlite' else db_info['postgres_dsn']})")
+
+    loop_task = asyncio.create_task(_simulation_loop())
+    try:
+        yield
+    finally:
+        loop_task.cancel()
+        try:
+            await loop_task
+        except asyncio.CancelledError:
+            pass
+        # Guardar estado final al detener limpiamente el servidor
+        try:
+            app_state.db.save_runtime_state_from_snapshot(app_state.simulator.get_snapshot())
+        except Exception:
+            pass
+>>>>>>> 6b869b7 (Initial commit: S_F_T)
 
 
 def create_app() -> FastAPI:
@@ -147,6 +221,7 @@ def create_app() -> FastAPI:
     async def disable_static_cache(request: Request, call_next):
         response = await call_next(request)
         path = request.url.path
+<<<<<<< HEAD
         if (
             path in ("/", "/index.html", "/ayuda", "/ayuda.html")
             or path.startswith("/static/")
@@ -159,12 +234,21 @@ def create_app() -> FastAPI:
         return response
 
     # Los endpoints de la API y la interfaz HMI usan el mismo origen.
+=======
+        if path in ("/", "/index.html", "/ayuda", "/ayuda.html") or path.startswith("/static/"):
+            response.headers["Cache-Control"] = "no-store, no-cache, must-revalidate, max-age=0"
+            response.headers["Pragma"] = "no-cache"
+        return response
+
+    # Routers modulares sincronizados con el frontend y la base de datos
+>>>>>>> 6b869b7 (Initial commit: S_F_T)
     application.include_router(system.router)
     application.include_router(database.router)
     application.include_router(scada.router)
     application.include_router(pid.router)
     application.include_router(rag.router)
     application.include_router(ws.router)
+<<<<<<< HEAD
     application.include_router(node_red.router)
     application.include_router(pages.router)
 
@@ -177,6 +261,16 @@ def create_app() -> FastAPI:
         )
     else:
         logger.error("Directorio frontend inexistente: %s", settings.frontend_dir)
+=======
+    application.include_router(pages.router)
+
+    if settings.frontend_dir.exists():
+        application.mount(
+            "/static",
+            StaticFiles(directory=str(settings.frontend_dir)),
+            name="static",
+        )
+>>>>>>> 6b869b7 (Initial commit: S_F_T)
 
     return application
 

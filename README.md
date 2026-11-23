@@ -33,6 +33,7 @@ El backend carga automáticamente `/home/user/.env` (ver plantilla `.env.example
 ```bash
 python3 start.py
 ```
+<<<<<<< HEAD
 
 
 ## Arquitectura reorganizada
@@ -176,3 +177,5 @@ La HMI incorpora la vista **Node-RED**. Node-RED envía heartbeat (10 s), cambio
 Configura `NODE_RED_MONITOR_TOKEN` y `NODE_RED_STALE_AFTER_S` en `.env`, usa el mismo secreto en el entorno de Node-RED (`SFT_MONITOR_TOKEN`) y define `SFT_MONITOR_URL`. Importa `node-red/flows-monitor-example.json` o usa el flujo completo incluido. Consulta `node-red/README.md` para Docker/Windows y pruebas.
 
 El monitor registra actividad instrumentada (heartbeat, eventos de estado emitidos por nodos y errores capturados); no representa un trace automático de cada mensaje que atraviesa cada nodo. El historial reside en memoria (últimos 200 eventos) y se reinicia al reiniciar FastAPI. No controla el PLC ni sustituye la validación de comunicación industrial.
+=======
+>>>>>>> 6b869b7 (Initial commit: S_F_T)
